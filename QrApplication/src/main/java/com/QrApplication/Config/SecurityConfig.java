@@ -39,8 +39,6 @@ public class SecurityConfig{
 		CookieCsrfTokenRepository cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
 		cookieCsrfTokenRepository.setCookieCustomizer(cookie->cookie .maxAge(3600) //set cookie secure for https
 														);
-		
-		
 		http.
 		    cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 		    @Override
@@ -66,13 +64,12 @@ public class SecurityConfig{
 			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
 			.csrfTokenRepository(cookieCsrfTokenRepository)
 	
-			.ignoringRequestMatchers("signup","login","/custom-login")  )
+			.ignoringRequestMatchers("signup","login","/custom-login","user")  )
 			.authorizeHttpRequests(request->request
 					.requestMatchers("test", "signup", "user","login").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
-
 			.exceptionHandling( ex->ex .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 		return http.build();
 	}

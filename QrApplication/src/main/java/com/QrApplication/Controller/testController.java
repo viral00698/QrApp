@@ -34,7 +34,6 @@ public class testController {
 		
 		Users users = new Users();
 		users.setEmail("abc@gmail.com");
-		
 		users.setPassword(passwordEncoder.encode("123"));
 		users.setRoles("user");
 		
@@ -44,14 +43,8 @@ public class testController {
 	}
 	
 	@GetMapping("/user")
-	public String getUserDetailsAfterLogin(Authentication authentication) {
-//	        List<Users> customers = userRepos.findByEmail(authentication.getName());
-//	        if (customers.size() > 0) {
-//	            return customers.get(0);
-//	        } else {
-//	            return null;
-//	        }
-//	       
+	public String getUserDetailsAfterLogin() {
+
 		return "ok";
 
 	}
@@ -66,6 +59,10 @@ public class testController {
 	@GetMapping("testSecure")
 	public String testSecure() {
 	      return "hello testSecure";
+	}
+	@GetMapping("testSecure2")
+	public String testSecure2() {
+	      return "hello testSecure2";
 	}
 	
 	

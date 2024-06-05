@@ -32,11 +32,11 @@ public class JWTTokenGanrateFilter extends OncePerRequestFilter{
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
 //		System.err.println( request.getServletPath());
-		if( authentication==null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.setHeader("X-XSRF-TOKEN", "");
-			filterChain.doFilter(request, response);
-		}
+//		if( authentication==null) {
+//			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//			response.setHeader("X-XSRF-TOKEN", "");
+//			filterChain.doFilter(request, response);
+//		}
 		
 		try {
 			
@@ -53,8 +53,7 @@ public class JWTTokenGanrateFilter extends OncePerRequestFilter{
 							response.setHeader(SecurityConstent.JWT_HEADER, jwt);
 			}
 		}catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			filterChain.doFilter(request, response);
+			e.printStackTrace();
 		}
 		
 		filterChain.doFilter(request, response);

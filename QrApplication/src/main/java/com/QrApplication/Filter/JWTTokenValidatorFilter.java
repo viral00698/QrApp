@@ -26,12 +26,15 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-			
+		
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
 			String jwt = request.getHeader(SecurityConstent.JWT_HEADER);
-//			System.err.println(jwt);
+
 			
 			if(jwt!=null) {
 				try {
+							
 					SecretKey key = Keys.hmacShaKeyFor((SecurityConstent.JWT_KEY).getBytes(StandardCharsets.UTF_8));
 					Claims claims = Jwts.parserBuilder()
 							.setSigningKey(key)
@@ -47,12 +50,13 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 		                SecurityContextHolder.getContext().setAuthentication(auth);
 	                       			
 				  }catch (Exception e) {
-					  filterChain.doFilter(request, response);
+					  e.printStackTrace();  
+					  System.err.println("JWT Token is Invalid");
 					  
 				}
 				
 			}
-			 filterChain.doFilter(request, response);
+			filterChain.doFilter(request, response);
 	}
 	
 	
@@ -61,6 +65,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
         return request.getServletPath().equals("login")
         	 ||request.getServletPath().equals("signup") 
         	 ||request.getServletPath().equals("custom-login");
+        	
     }
 	
 }

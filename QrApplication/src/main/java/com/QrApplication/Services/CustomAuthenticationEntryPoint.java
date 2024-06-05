@@ -15,9 +15,10 @@ public class CustomAuthenticationEntryPoint  implements AuthenticationEntryPoint
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			org.springframework.security.core.AuthenticationException authException)
 			throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("Unauthorized: Authentication is required");
-        response.getWriter().flush();
+			response.reset();
+        	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        	response.getWriter().write("Unauthorized: Authentication is required");
+        	response.getWriter().flush();
 	}
 
 }

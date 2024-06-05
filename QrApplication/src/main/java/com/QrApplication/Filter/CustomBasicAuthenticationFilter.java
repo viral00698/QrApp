@@ -34,8 +34,10 @@ public class CustomBasicAuthenticationFilter  extends OncePerRequestFilter{
 	                SecurityContextHolder.getContext().setAuthentication(authentication);
 	                filterChain.doFilter(request, response);
 	         } catch (Exception e) {
-	                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-	            }
+//	                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	        	 e.printStackTrace();
+	        	 System.err.println("username invalid++++++++++++++");
+	          }
 	}
 	
 	private Authentication extractAuthentication(HttpServletRequest request) {
