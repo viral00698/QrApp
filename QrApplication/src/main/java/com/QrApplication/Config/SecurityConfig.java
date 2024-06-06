@@ -18,11 +18,11 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.QrApplication.AuthService.CustomAuthenticationEntryPoint;
 import com.QrApplication.Filter.CsrfCookieFilter;
 import com.QrApplication.Filter.JWTTokenGanrateFilter;
 import com.QrApplication.Filter.JWTTokenValidatorFilter;
 import com.QrApplication.Filter.RequestValidationBeforeFilter;
-import com.QrApplication.Services.CustomAuthenticationEntryPoint;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -64,9 +64,9 @@ public class SecurityConfig{
 			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
 			.csrfTokenRepository(cookieCsrfTokenRepository)
 	
-			.ignoringRequestMatchers("signup","login","/custom-login","user")  )
+			.ignoringRequestMatchers("/auth/signup","login","/custom-login","user")  )
 			.authorizeHttpRequests(request->request
-					.requestMatchers("test", "signup", "user","login").permitAll()
+					.requestMatchers("test", "/auth/signup", "user","login").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())

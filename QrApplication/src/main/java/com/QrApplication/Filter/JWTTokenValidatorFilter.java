@@ -45,6 +45,8 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 					 String username = String.valueOf(claims.get("username"));
 					 String authorities = (String) claims.get("authorities");
 					 
+					 System.err.println(username);
+					 	 
 					 Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
 		                        AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 		                SecurityContextHolder.getContext().setAuthentication(auth);
@@ -63,7 +65,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 	@Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().equals("login")
-        	 ||request.getServletPath().equals("signup") 
+        	 ||request.getServletPath().equals("/auth/signup") 
         	 ||request.getServletPath().equals("custom-login");
         	
     }

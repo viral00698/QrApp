@@ -1,4 +1,4 @@
-package com.QrApplication.Services;
+package com.QrApplication.AuthService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.QrApplication.AuthRepository.UserRepos;
 import com.QrApplication.Entity.Users;
 
 @Component
@@ -55,5 +56,5 @@ public class UsersService implements AuthenticationProvider {
 		return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
 	}
 
-		
+
 }
