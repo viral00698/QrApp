@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthRepository.UserRepos;
@@ -14,6 +15,7 @@ import com.QrApplication.Enum.UserType;
 
 
 @RestController
+
 public class testController {
 	
 	@Autowired
@@ -37,13 +39,13 @@ public class testController {
 		Users users = new Users();
 		users.setEmail("test4@gmail.com");
 		users.setPassword(passwordEncoder.encode("123"));
-		users.setRoles("user");
+//		users.setRoles("user");
 		
 		Roles r1 = new Roles();
-		r1.setUserType(UserType.User);
+		r1.setUserType(UserType.USER);
 //		r2.setUserType(UserType.Admin);
-		Users e =  users.addRole(r1);
-		System.err.println(e.getId());
+//		Users e =  users.addRole(r1);
+//		System.err.println(e.getId());
 //		users.addRole(r2);
 	
 		userRepos.save(users);
@@ -62,9 +64,13 @@ public class testController {
 	      return "ok";
 	}
 	
-	@GetMapping("testSecure")
+	@GetMapping("/testSecureAdmin/viral")
 	public String testSecure() {
 	      return "hello testSecure";
+	}
+	@GetMapping("/testSecureAdmin1/viral")
+	public String testSecure1() {
+	      return "hello testSecure1";
 	}
 	@GetMapping("testSecure2")
 	public String testSecure2() {
