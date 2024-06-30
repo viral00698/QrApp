@@ -38,17 +38,17 @@ public class JWTTokenGanrateFilter extends OncePerRequestFilter{
 //			filterChain.doFilter(request, response);
 //		}
 		
-		try {
-			
+	  try {
+		
 			if(authentication!=null && !authentication.getName().equals("anonymousUser") && request.getServletPath().equals("/login")) {
 				SecretKey key = Keys.hmacShaKeyFor((SecurityConstent.JWT_KEY).getBytes(StandardCharsets.UTF_8));
 				String jwt = Jwts.builder()
 							.claim("username", authentication.getName())
-							.claim("authrites", populateAuthorities(authentication.getAuthorities()))
+							.claim("authorities", populateAuthorities(authentication.getAuthorities()))
 							.setSubject("JWT Token")
 							.setIssuer(SecurityConstent.TOKEN_ISSUER)
 							.setIssuedAt(new Date())
-							.setExpiration(new Date( new Date().getTime() + 300000))
+							.setExpiration(new Date( new Date().getTime() + 900000))
 							.signWith(key).compact();
 							response.setHeader(SecurityConstent.JWT_HEADER, jwt);
 			}
@@ -63,10 +63,17 @@ public class JWTTokenGanrateFilter extends OncePerRequestFilter{
 	 private String populateAuthorities(Collection<? extends GrantedAuthority> collection) {
 	        Set<String> authoritiesSet = new HashSet<>();
 	        for (GrantedAuthority authority : collection) {
-	            authoritiesSet.add(authority.getAuthority());
+	            authoritiesSet.add("ROLE_"+authority.getAuthority());
 	        }
 	        return String.join(",", authoritiesSet);
-	    }
+	 }
+	 
+	 
+//	 @Override
+//	    protected boolean shouldNotFilter(HttpServletRequest request) {
+//	        return !request.getServletPath().equals("//");
+//	    }
+
 
 	
 }
