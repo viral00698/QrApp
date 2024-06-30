@@ -44,12 +44,13 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 					
 					 String username = String.valueOf(claims.get("username"));
 					 String authorities = (String) claims.get("authorities");
-					 	;
+					 
+					 System.err.println(username);
+					 	 
 					 Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
-		                AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
+		                        AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 		                SecurityContextHolder.getContext().setAuthentication(auth);
-	                 	System.err.println(auth);
-	                 	System.err.println(response.getStatus());
+	                       			
 				  }catch (Exception e) {
 					  e.printStackTrace();  
 					  System.err.println("JWT Token is Invalid");

@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.QrApplication.AuthService.CustomAuthenticationEntryPoint;
-import com.QrApplication.Enum.UserType;
 import com.QrApplication.Filter.CsrfCookieFilter;
 import com.QrApplication.Filter.JWTTokenGanrateFilter;
 import com.QrApplication.Filter.JWTTokenValidatorFilter;
@@ -49,8 +48,8 @@ public class SecurityConfig{
                 config.setAllowedMethods(Collections.singletonList("*"));
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*")); // set required header in feture
-                config.setExposedHeaders(Arrays.asList("Authorization")); // 
-                config.setMaxAge(3600L);      
+                config.setExposedHeaders(Arrays.asList("Authorization"));
+                config.setMaxAge(3600L);
            
                 return config;
              } }))
@@ -67,8 +66,6 @@ public class SecurityConfig{
 	
 			.ignoringRequestMatchers("/auth/signup","login","/custom-login","user")  )
 			.authorizeHttpRequests(request->request
-					.requestMatchers("/testSecureAdmin/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("/testSecureAdmin1/**").hasRole("USER")
 					.requestMatchers("test", "/auth/signup", "user","login").permitAll()
 				    .anyRequest().authenticated())
 			

@@ -1,4 +1,4 @@
-package com.QrApplication.AuthService;
+package com.QrApplication.Services;
 
 import java.io.IOException;
 

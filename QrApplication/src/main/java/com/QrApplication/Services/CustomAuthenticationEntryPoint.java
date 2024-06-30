@@ -1,4 +1,4 @@
-package com.QrApplication.AuthService;
+package com.QrApplication.Services;
 
 import java.io.IOException;
 
@@ -15,7 +15,6 @@ public class CustomAuthenticationEntryPoint  implements AuthenticationEntryPoint
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			org.springframework.security.core.AuthenticationException authException)
 			throws IOException, ServletException {
-			System.err.println(response.getStatus());
 			response.reset();
         	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         	response.getWriter().write("Unauthorized: Authentication is required");
