@@ -2,41 +2,38 @@ package com.QrApplication.Entity;
 
 import java.util.UUID;
 
-import com.QrApplication.Enum.UserType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-//@Data
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Entity
-public class Roles {
-
+public class Product {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID roleId;
+	private UUID productId;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(unique = false)
-	private UserType userType;
+	@Column(nullable = false)
+	private String itemName;
+	
+	private Integer quantity;
+	private Integer gram;
+	private Integer totalGram;
+	private Integer totalQuantity;
+	private String description;
+	private Boolean status;
 	
 	@ManyToOne
 	@JoinColumn(name = "id")
 	@JsonBackReference
 	private Users users;
+	
 }
