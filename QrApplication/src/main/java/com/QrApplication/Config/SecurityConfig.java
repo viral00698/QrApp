@@ -1,7 +1,9 @@
 package com.QrApplication.Config;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +19,10 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.QrApplication.AuthService.CustomAuthenticationEntryPoint;
-import com.QrApplication.Enum.UserType;
 import com.QrApplication.Filter.CsrfCookieFilter;
 import com.QrApplication.Filter.JWTTokenGanrateFilter;
 import com.QrApplication.Filter.JWTTokenValidatorFilter;
@@ -45,13 +48,22 @@ public class SecurityConfig{
 		    @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
+         
                 config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-                config.setAllowedMethods(Collections.singletonList("*"));
+                
+                List<String> ss = new ArrayList<>();
+                ss.add("GET");
+                ss.add("POST");
+                ss.add("PUT");
+                ss.add("DELETE");
+                ss.add("HEAD");
+                ss.add("OPTIONS");
+                config.setAllowedMethods(ss);
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*")); // set required header in feture
                 config.setExposedHeaders(Arrays.asList("Authorization")); // 
-                config.setMaxAge(3600L);      
-           
+                config.setMaxAge(3600L);
+                           
                 return config;
              } }))
 		   
@@ -65,17 +77,30 @@ public class SecurityConfig{
 			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
 			.csrfTokenRepository(cookieCsrfTokenRepository)
 	
-			.ignoringRequestMatchers("/auth/signup","login","/custom-login","user")  )
+			.ignoringRequestMatchers("/auth/signup","login","/custom-login","user","/ws/**" , "ws://localhost:8080")  )
 			.authorizeHttpRequests(request->request
 					.requestMatchers("/testSecureAdmin/**").hasAnyRole("USER","ADMIN")
 					.requestMatchers("/testSecureAdmin1/**").hasRole("USER")
-					.requestMatchers("test", "/auth/signup", "user","login").permitAll()
+					.requestMatchers("test", "/auth/signup", "user","login","test/**" , "ws/**").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
 			.exceptionHandling( ex->ex .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 		return http.build();
 	}
+	
+	@Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+                        .allowedHeaders("*");
+            }
+        };
+    }
 	
 	@Bean
 	PasswordEncoder passwordEncoder() {
