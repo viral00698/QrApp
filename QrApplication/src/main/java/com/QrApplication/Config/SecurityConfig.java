@@ -19,8 +19,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.QrApplication.AuthService.CustomAuthenticationEntryPoint;
 import com.QrApplication.Filter.CsrfCookieFilter;
@@ -41,31 +40,30 @@ public class SecurityConfig{
 		CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 		csrfTokenRequestAttributeHandler.setCsrfRequestAttributeName("_csrf");
 		CookieCsrfTokenRepository cookieCsrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-		cookieCsrfTokenRepository.setCookieCustomizer(cookie->cookie .maxAge(3600) //set cookie secure for https
-														);
+		cookieCsrfTokenRepository.setCookieCustomizer(cookie->cookie .maxAge(3600) //set cookie secure for https 
+		);
+		
+		
 		http.
-		    cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-		    @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                CorsConfiguration config = new CorsConfiguration();
-         
-                config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-                
-                List<String> ss = new ArrayList<>();
-                ss.add("GET");
-                ss.add("POST");
-                ss.add("PUT");
-                ss.add("DELETE");
-                ss.add("HEAD");
-                ss.add("OPTIONS");
-                config.setAllowedMethods(ss);
-                config.setAllowCredentials(true);
-                config.setAllowedHeaders(Collections.singletonList("*")); // set required header in feture
-                config.setExposedHeaders(Arrays.asList("Authorization")); // 
-                config.setMaxAge(3600L);
-                           
-                return config;
-             } }))
+		    cors(corsCustomizer -> corsCustomizer.configurationSource(
+//		    		new CorsConfigurationSource() 
+		    		
+		    		this.corsConfiguration()
+//		    
+//		    {
+//		    @Override
+//            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+//                CorsConfiguration config = new CorsConfiguration();
+//                config.setAllowedOrigins(Collections.singletonList("http://localhost:4200/**"));
+//                config.setAllowedMethods(Collections.singletonList("*"));
+//                config.setAllowCredentials(true);
+//                config.setAllowedHeaders(Collections.singletonList("*")); // set required header in feture
+//                config.setExposedHeaders(Arrays.asList("Authorization")); // 
+//                config.setMaxAge(3600L);      
+//           
+//                return config;
+//             } }
+		    ))
 		   
 		    .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 		    .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
@@ -77,11 +75,10 @@ public class SecurityConfig{
 			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
 			.csrfTokenRepository(cookieCsrfTokenRepository)
 	
-			.ignoringRequestMatchers("/auth/signup","login","/custom-login","user","/ws/**" , "ws://localhost:8080")  )
+			.ignoringRequestMatchers("signup","/login","/custom-login","user","login")  )
 			.authorizeHttpRequests(request->request
-					.requestMatchers("/testSecureAdmin/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("/testSecureAdmin1/**").hasRole("USER")
-					.requestMatchers("test", "/auth/signup", "user","login","test/**" , "ws/**").permitAll()
+					.requestMatchers("/s1/**").hasAnyRole("USER","ADMIN")
+					.requestMatchers("test", "signup", "user","/login","login").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
@@ -90,21 +87,26 @@ public class SecurityConfig{
 	}
 	
 	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                        .allowedHeaders("*");
-            }
-        };
-    }
-	
-	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	CorsConfigurationSource corsConfiguration() {
+		CorsConfiguration coreConfig = new CorsConfiguration();
+		coreConfig.setAllowedOrigins(Arrays.asList("http://localhost:*"));
+		coreConfig.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "UPDATE", "OPTIONS"));
+		coreConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "Authorization")); //Authorization
+		coreConfig.setExposedHeaders(Arrays.asList("Authorization" , "x-xsrf-token"));
+		
+		List<String> urls = new ArrayList<>();
+		
+		urls.add("http://localhost:*");
+		coreConfig.setAllowCredentials(true);
+		coreConfig.setAllowedOriginPatterns(urls);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", coreConfig);
+		return source;
 	}
 	
 //	.formLogin(

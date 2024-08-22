@@ -1,6 +1,7 @@
 package com.QrApplication.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthRepository.UserRepos;
+import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Entity.Roles;
 import com.QrApplication.Entity.Users;
 import com.QrApplication.Enum.UserType;
@@ -59,18 +61,18 @@ public class testController {
 	}
 	
 	
-	@GetMapping("login")
-	public String Login(Authentication authentication) {
-	      return "ok";
-	}
+//	@GetMapping("login")
+//	public ResponseType<String> Login(Authentication authentication) {
+//	      return new ResponseType<String>().ResponseGenerator(HttpStatus.ACCEPTED);
+//	}
 	
 	@GetMapping("/testSecureAdmin/viral")
-	public String testSecure() {
-	      return "hello testSecure";
+	public  ResponseType<String> testSecure() {
+		return new ResponseType<String>().ResponseGenerator(HttpStatus.ACCEPTED);
 	}
 	@GetMapping("/testSecureAdmin1/viral")
-	public String testSecure1() {
-	      return "hello testSecure1";
+	public  ResponseType<String> testSecure1() {
+		return new ResponseType<String>().ResponseGenerator(HttpStatus.ACCEPTED);
 	}
 	@GetMapping("testSecure2")
 	public String testSecure2() {
