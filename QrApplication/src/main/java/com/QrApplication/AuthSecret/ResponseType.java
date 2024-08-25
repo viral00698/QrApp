@@ -1,58 +1,56 @@
 package com.QrApplication.AuthSecret;
 
-
 import org.springframework.http.HttpStatus;
-
 import com.QrApplication.Enum.RequestStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
 
 @Data
-public class ResponseType<T>{
-		
+public class ResponseType {
+
 	private String message;
 	private HttpStatus statusCode;
-	private RequestStatus requestStatus;
-	private T data;
+	private RequestStatus status;
+	
+	@JsonBackReference
+	private Object object;
+
+	public static ResponseType ResponseGenerator(RequestStatus requestStatus, String message, Object object) {
+		ResponseType obj = new ResponseType();
+		obj.setStatus(requestStatus);
+		obj.setObject(object);
+		obj.setMessage(message);
+
+		return obj;
+	}
 	
 
-    public  ResponseType<T> ResponseGenerator(HttpStatus status, String message, T data) {
-        this.statusCode = status;
-        this.message = message;
-        this.data = data;
-        
-        return this;
-    }
-    
-    public  ResponseType<T> ResponseGenerator(HttpStatus status, String message) {
-        this.statusCode = status;
-        this.message = message;
-        
-        return this;
-    }
-    
-    public  ResponseType<T> ResponseGenerator(HttpStatus status , RequestStatus requestStatus) {
-        this.statusCode = status;
-        this.requestStatus = requestStatus;
-       
-        return this;
-    }
-    
-    public  ResponseType<T> ResponseGenerator(HttpStatus status , RequestStatus requestStatus , String msg) {
-        this.statusCode = status;
-        this.requestStatus = requestStatus;
-        this.message  = msg;
-       
-        return this;
-    }
-    
-    
-    public  ResponseType<T> ResponseGenerator(HttpStatus status) {
-        this.statusCode = status;
-        
-        return this;
-    }
-    
+	public static ResponseType ResponseGenerator(RequestStatus requestStatus, String message, HttpStatus status) {
+		ResponseType obj = new ResponseType();
+		obj.setStatus(requestStatus);
+		obj.setStatusCode(status);
+		obj.setMessage(message);
 
+		return obj;
+	}
+
+	public static ResponseType ResponseGenerator(RequestStatus requestStatus, String message, Object object,
+			HttpStatus status) {
+		ResponseType obj = new ResponseType();
+		obj.setStatus(requestStatus);
+		obj.setObject(object);
+		obj.setMessage(message);
+		obj.setStatusCode(status);
+
+		return obj;
+	}
+
+	public static ResponseType ResponseGenerator(RequestStatus requestStatus, String message) {
+		ResponseType obj = new ResponseType();
+		obj.setStatus(requestStatus);
+		obj.setMessage(message);
+		return obj;
+	}
 
 }

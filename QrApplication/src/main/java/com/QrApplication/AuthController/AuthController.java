@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.QrApplication.AuthDto.UsersDto;
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.AuthSecret.UsersBhehavior;
+import com.QrApplication.Enum.RequestStatus;
 
 @RestController
 public class AuthController {
@@ -18,12 +19,17 @@ public class AuthController {
 	private UsersBhehavior usersBhehavior;
 
 	@PostMapping("signup")
-	public ResponseType<String> createUser(@RequestBody UsersDto usersDto) {
+	public ResponseType createUser(@RequestBody UsersDto usersDto) {
 		return this.usersBhehavior.createUser(usersDto);
 	}
 	
 	@GetMapping("login")
-	public ResponseType<String> login() {
-		return new ResponseType<String>().ResponseGenerator(HttpStatus.OK, "Login successfully");
+	public ResponseType login() {
+		return ResponseType.ResponseGenerator(RequestStatus.success, "Login successfully" , HttpStatus.ACCEPTED);
+	}
+	
+	@GetMapping("logout")
+	public ResponseType logout(){
+		return ResponseType.ResponseGenerator(RequestStatus.success, "Logout successfully" ,HttpStatus.ACCEPTED);
 	}
 }

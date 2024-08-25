@@ -11,7 +11,7 @@ public interface UsersBhehavior {
 //		return true;
 //	}
 	
-	public ResponseType<String> createUser(UsersDto usersDto);
+	public ResponseType createUser(UsersDto usersDto);
 	
 	
 }

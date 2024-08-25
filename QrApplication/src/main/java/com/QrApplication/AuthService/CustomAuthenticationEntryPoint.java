@@ -39,7 +39,7 @@ public class CustomAuthenticationEntryPoint  implements AuthenticationEntryPoint
 
 	        // Create a JSON object for the error message
 //	        String jsonResponse = "{ \"error\": \"Unauthorized: Authentication is required\" }";
-	        String jsonResponse= objectMapper.writeValueAsString(new ResponseType<String>().ResponseGenerator(HttpStatus.BAD_REQUEST , RequestStatus.failure, "Unauthorized: Authentication is required"));
+	        String jsonResponse= objectMapper.writeValueAsString(ResponseType.ResponseGenerator(RequestStatus.failure, "Unauthorized: Authentication is required" , HttpStatus.BAD_REQUEST));
 	        // Write the JSON response
 	        response.getWriter().write(jsonResponse);
 	        response.getWriter().flush();

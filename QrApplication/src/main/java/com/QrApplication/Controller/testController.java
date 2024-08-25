@@ -13,6 +13,7 @@ import com.QrApplication.AuthRepository.UserRepos;
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Entity.Roles;
 import com.QrApplication.Entity.Users;
+import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Enum.UserType;
 
 
@@ -67,12 +68,12 @@ public class testController {
 //	}
 	
 	@GetMapping("/testSecureAdmin/viral")
-	public  ResponseType<String> testSecure() {
-		return new ResponseType<String>().ResponseGenerator(HttpStatus.ACCEPTED);
+	public  ResponseType testSecure() {
+		return ResponseType.ResponseGenerator(RequestStatus.success , "ok");
 	}
 	@GetMapping("/testSecureAdmin1/viral")
-	public  ResponseType<String> testSecure1() {
-		return new ResponseType<String>().ResponseGenerator(HttpStatus.ACCEPTED);
+	public  ResponseType testSecure1() {
+		return ResponseType.ResponseGenerator(RequestStatus.success,"ok");
 	}
 	@GetMapping("testSecure2")
 	public String testSecure2() {

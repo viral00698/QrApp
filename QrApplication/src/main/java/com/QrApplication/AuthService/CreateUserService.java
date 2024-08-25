@@ -31,11 +31,10 @@ public class CreateUserService implements UsersBhehavior {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	public ResponseType<String> createUser(UsersDto usersDto) {
+	public ResponseType createUser(UsersDto usersDto) {
 
 		if (usersDto == null) {
-			return new ResponseType<String>().ResponseGenerator(HttpStatus.BAD_REQUEST, RequestStatus.failure,
-					"Invalid Request");
+			return ResponseType.ResponseGenerator(RequestStatus.failure,"Invalid Request",HttpStatus.BAD_REQUEST);
 		}
 
 		if (usersDto.getEmail() != null || usersDto.getPassword() != null || usersDto.getRole() != null || usersDto.getName()!=null) {
@@ -64,18 +63,18 @@ public class CreateUserService implements UsersBhehavior {
 					}
 
 					this.rolesRepository.saveAll(tmp);
-					return new ResponseType<String>().ResponseGenerator(HttpStatus.CREATED, RequestStatus.success,
-							"User Created");
+					return ResponseType.ResponseGenerator(RequestStatus.success,
+							"User Created",HttpStatus.CREATED);
 				}
 			} else {
-				return new ResponseType<String>().ResponseGenerator(HttpStatus.BAD_REQUEST, RequestStatus.failure,
-						"Username already exists");
+				return ResponseType.ResponseGenerator(RequestStatus.failure,
+						"Username already exists" , HttpStatus.BAD_REQUEST);
 			}
 
 		}
 
-		return new ResponseType<String>().ResponseGenerator(HttpStatus.BAD_REQUEST, RequestStatus.failure,
-				"Invalid Request");
+		return ResponseType.ResponseGenerator(RequestStatus.failure,
+				"Invalid Request" , HttpStatus.BAD_REQUEST);
 
 	}
 }
