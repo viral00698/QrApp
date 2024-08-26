@@ -1,0 +1,42 @@
+package com.QrApplication.Config;
+
+import java.util.concurrent.Executor;
+
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+
+@Configuration
+public class MyCustomThreadPool implements AsyncConfigurer{
+	
+	@Override
+	public Executor getAsyncExecutor() {
+		
+		Integer MAX_POOL_SIZE = 10;
+		Integer CORE_POOL_SIZE = 5;
+		Integer QUEUE_CAPACITY = 20;
+		
+		String PRIFIX = "MyCustomThred:";
+		
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+		
+		taskExecutor.setCorePoolSize(CORE_POOL_SIZE);
+		taskExecutor.setMaxPoolSize(MAX_POOL_SIZE);
+		taskExecutor.setQueueCapacity(QUEUE_CAPACITY);
+		taskExecutor.setThreadNamePrefix(PRIFIX);
+		taskExecutor.initialize();
+		
+		return null;
+	}
+	
+	@Override
+	public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+		 return (throwable, method, obj) -> {
+	            System.err.println("Exception in async method '" + method.getName() + "' - " + throwable);
+	     };
+	}
+
+}
