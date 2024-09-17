@@ -6,19 +6,23 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import com.QrApplication.Filter.JwtSocketHandshakeInterceptor;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class SocketConfiguration implements WebSocketMessageBrokerConfigurer{
 
 	@Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic" , "/queue");
         config.setApplicationDestinationPrefixes("/app");
+        config.setUserDestinationPrefix("user");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
+        .addInterceptors(new JwtSocketHandshakeInterceptor())
         .setAllowedOrigins("http://localhost:4200")
         .withSockJS();
     }

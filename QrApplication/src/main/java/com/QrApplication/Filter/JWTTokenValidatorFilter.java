@@ -30,7 +30,6 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 //		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
 			String jwt = request.getHeader(SecurityConstent.JWT_HEADER);
-
 			
 			if(jwt!=null) {
 				try {
@@ -50,10 +49,10 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 		                SecurityContextHolder.getContext().setAuthentication(auth);
 //	                 	System.err.println(auth);
 //	                 	System.err.println(response.getStatus());
-				  }catch (Exception e) {
-					  e.printStackTrace();  
+				  }catch (Exception e) {	  
+					  System.err.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 					  System.err.println("JWT Token is Invalid");
-					  
+					  System.err.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 				}
 				
 			}
@@ -64,9 +63,8 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter{
 	@Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().equals("login")
-        	 ||request.getServletPath().equals("/auth/signup") 
-        	 ||request.getServletPath().equals("custom-login");
-        	
+        	 ||request.getServletPath().equals("signup") 
+        	 ||request.getServletPath().equals("placeOrder");
     }
 	
 }

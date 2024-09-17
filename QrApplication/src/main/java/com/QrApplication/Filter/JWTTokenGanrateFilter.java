@@ -53,7 +53,7 @@ public class JWTTokenGanrateFilter extends OncePerRequestFilter{
 							response.setHeader(SecurityConstent.JWT_HEADER, jwt);
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 		
 		filterChain.doFilter(request, response);

@@ -20,7 +20,9 @@ public class MyCustomThreadPool implements AsyncConfigurer{
 		Integer QUEUE_CAPACITY = 20;
 		
 		String PRIFIX = "MyCustomThred:";
-		
+		System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+		System.err.println("My Custom Thred pool");
+		System.err.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
 		
 		taskExecutor.setCorePoolSize(CORE_POOL_SIZE);

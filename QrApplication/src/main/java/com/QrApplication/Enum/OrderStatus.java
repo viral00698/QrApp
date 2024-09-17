@@ -8,4 +8,6 @@ public enum OrderStatus {
 	CANCELLED,  // Order has been cancelled
 	CONFIRMED, // Order has been confirmed by the restaurant
 	READY_FOR_PICKUP,
+	WAIT_FOR_APPROVE,
+	APPROVED
 }	
