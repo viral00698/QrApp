@@ -1,6 +1,7 @@
 package com.QrApplication.Enum;
 
 public enum AppType {
-	QR_APP,
-	TABLE_APP
+	QRAPP,
+	TABLE_APP,
+	HOME_DELIVERY
 }

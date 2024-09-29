@@ -61,9 +61,11 @@ public class Users {
 	@JsonManagedReference
 	private Set<Address> address= new HashSet<>();
 	
-	@OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
-	@JsonManagedReference
-	private Set<Product> product= new HashSet<>();
+//	@OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
+//	@JsonManagedReference
+//	private Set<Product> product= new HashSet<>();
+	
+	
 
 	
 }

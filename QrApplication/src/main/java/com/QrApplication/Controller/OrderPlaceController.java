@@ -17,6 +17,7 @@ import com.QrApplication.Service.OrderPlaceService;
 
 
 @RestController
+@RequestMapping("api/v1/qr/order")
 public class OrderPlaceController {
 
 	@Autowired
@@ -25,6 +26,7 @@ public class OrderPlaceController {
 	@PostMapping("placeOrder")
 	@Async
 	public CompletableFuture<ResponseType> orderPlace(@RequestBody Orders orders) {
+
 		return this.orderPlaceService.place(orders);	
 	}
 	

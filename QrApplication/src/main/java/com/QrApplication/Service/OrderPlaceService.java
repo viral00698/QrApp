@@ -2,6 +2,7 @@ package com.QrApplication.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -11,15 +12,16 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.BillingDtos;
+import com.QrApplication.Dtos.OrderResponse;
 import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.Product;
+import com.QrApplication.Enum.AppType;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
 import com.QrApplication.Enum.RequestStatus;
@@ -66,11 +68,17 @@ public class OrderPlaceService implements OrderPlace {
 		
 		return CompletableFuture.supplyAsync(()->{
 			
+			OrderResponse orderResponse = new OrderResponse();
+			
+			//step:0 check vender status and venderid is valid
+			
 			// step:1 check order aviliblity in database
 			Orders orders = Optional.ofNullable(order).get();
+	
 			List<UUID> list = orders.getOrderDetails().stream().map(OrderDetails::getProductId)
 					.collect(Collectors.toList());
 			List<Product> products = this.checkAviliblity(list);
+		
 			System.err.println(products);
 			if (products.isEmpty()) {
 				System.err.println("null values");
@@ -96,7 +104,10 @@ public class OrderPlaceService implements OrderPlace {
 
 				// step:3.1 save order details in database
 				Orders savedOrder = this.orderDetailsSave(orders, billingDtos, token);
-
+				orderResponse.setOrders(savedOrder);
+				orderResponse.setOrderDetails(order.getOrderDetails());
+				orderResponse.setBill(billingDtos);
+				orderResponse.setToken(token);
 				// step:3.2 send request to the vender for order accept;
 				// send notification to the vendor
 				this.sendOrderNotificationVendor(orders);
@@ -108,11 +119,11 @@ public class OrderPlaceService implements OrderPlace {
 	//
 //			}
 			
-			return ResponseType.ResponseGenerator(RequestStatus.success , "Order Placed");
+			return ResponseType.ResponseGenerator(RequestStatus.success , "Order Placed", orderResponse);
 			
 		}).exceptionally(ex->{
 			System.err.println(ex.getMessage());
-			 return ResponseType.ResponseGenerator(RequestStatus.failure, "Error placing order");
+			 return ResponseType.ResponseGenerator(RequestStatus.failure, "Error while placing order");
 		});
 		
 	
@@ -146,6 +157,7 @@ public class OrderPlaceService implements OrderPlace {
 		orders.setSgst(billingDtos.getSgst());
 		orders.setRestaurantsCharge(billingDtos.getResturentCharge());
 	    orders.setOrderAt(new Date());
+//	    orders.setAppType(AppType.QRAPP);
 		Orders saveOrder = orderRepository.save(orders);
 
 		List<OrderDetails> orderDetails = new ArrayList<>();

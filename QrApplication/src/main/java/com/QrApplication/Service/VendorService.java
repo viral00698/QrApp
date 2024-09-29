@@ -16,9 +16,16 @@ public class VendorService {
 	@Autowired
 	private VenderRepository venderRepository;
 	
+	
 	public ResponseType getById(UUID id) {
 		Vendor vendor = new Vendor();
-		vendor = venderRepository.findById(id).get();
+		try {
+			
+			vendor = venderRepository.findById(id).get();
+		}catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		
 		if(vendor!=null) {
 			return ResponseType.ResponseGenerator(RequestStatus.success, vendor);
 		}

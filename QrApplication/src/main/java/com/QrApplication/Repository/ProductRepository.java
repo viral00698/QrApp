@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.QrApplication.Entity.Product;
 import com.QrApplication.Entity.Users;
+import com.QrApplication.Entity.Vendor;
 
 @EnableJpaRepositories
 @Repository
@@ -19,5 +20,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID>{
 	 	@Query("SELECT p FROM Product p WHERE p.productId IN :ids AND p.status=true")
 		public List<Product> checkAviliblityInDb(@Param("ids") List<UUID> ids);
 	 	
-	 	public List<Product> findByUsers(Users users);
+	 	public List<Product> findByVendor(Vendor vendor);
 }

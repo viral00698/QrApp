@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
-
 import com.QrApplication.Entity.Users;
 import com.QrApplication.Service.ProductService;
 
@@ -25,9 +24,7 @@ public class ProductController {
 	public ResponseType getProductByUser(@PathVariable("id") String id ) {
 		
 		System.err.println(id);
-		
-		Users users = new Users();
-		users.setId(UUID.fromString(id));
-		return this.productService.getProductList(users);
+	
+		return this.productService.getProductList(UUID.fromString(id));
 	}
 }

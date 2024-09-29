@@ -33,13 +33,15 @@ public class OrderBillingService implements BillingSubject {
 
 			// step:2 calculate gst from total amount;
 			double gst = (vendor.getGstCharge() / 100) * totalAmount;
+			gst = Double.parseDouble(String.format("%.2f", gst));
 
 			// step:3 calculate sgst from total amount;
 			double sgst = (vendor.getSgstCharge() / 100) * totalAmount;
+			sgst = Double.parseDouble(String.format("%.2f", sgst));
 
 			// step:4 calculate ResturentCharge from total amount;
 			double restoCharge = (vendor.getResturentCharge() / 100) * totalAmount;
-
+			restoCharge = Double.parseDouble(String.format("%.2f", restoCharge));
 			// add all this amount
 
 			billingDtos.setGst(gst);
@@ -48,7 +50,7 @@ public class OrderBillingService implements BillingSubject {
 			billingDtos.setTotalAmount(totalAmount);
 			billingDtos.setAmountl(totalAmount);
 			totalAmount = gst + sgst + restoCharge;
-		
+			totalAmount = Double.parseDouble(String.format("%.2f", totalAmount));
 		});
 
 		return billingDtos;

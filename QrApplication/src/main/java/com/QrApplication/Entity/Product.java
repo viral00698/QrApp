@@ -57,9 +57,9 @@ public class Product {
 	private Integer itemQty = 0; // for item increment only
 
 	@ManyToOne
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "vendor_id")
 	@JsonBackReference
-	private Users users;
+	private Vendor vendor;
 
 	@Override
 	public String toString() {

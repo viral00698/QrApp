@@ -73,10 +73,10 @@ public class SecurityConfig{
 			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
 			.csrfTokenRepository(cookieCsrfTokenRepository)
 	
-			.ignoringRequestMatchers("signup","/login","/custom-login","user","login" ,"/ws/**" , "placeOrder" , "saveProduct")  )
+			.ignoringRequestMatchers("signup","/login","/custom-login","user","login" ,"/ws/**" , "api/v1/qr/order/**" , "saveProduct")  )
 			.authorizeHttpRequests(request->request
 					.requestMatchers("/s1/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("test", "signup", "user","/login","login","/ws/**","placeOrder","saveProduct" ,"Orders/**" , "product/**" , "vendor/**").permitAll()
+					.requestMatchers("test", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**","saveProduct" ,"Orders/**" , "product/**" , "vendor/**").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
@@ -94,14 +94,15 @@ public class SecurityConfig{
 	
 //		coreConfig.setAllowedOrigins(Arrays.asList("http://localhost:*" , "http://localhost:8080/ws" , "ws://localhost:8080/ws","ws://localhost:4200/ws"	));
 		coreConfig.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "UPDATE", "OPTIONS"));
-		coreConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "Authorization")); //Authorization
+		coreConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "Authorization" , "x-xsrf-token")); //Authorization
 		coreConfig.setExposedHeaders(Arrays.asList("Authorization" , "x-xsrf-token"));
 		
 		List<String> urls = new ArrayList<>();
-		urls.add("http://192.168.1.17:*");
+		urls.add("http://192.168.1.16:*");
 		urls.add("http://192.168.1.18:*");
 		urls.add("http://localhost:*");	
 		urls.add("http://localhost:8080/ws");
+		urls.add("http://192.168.1.21:*");
 	
 		coreConfig.setAllowCredentials(true);
 		coreConfig.setAllowedOriginPatterns(urls);

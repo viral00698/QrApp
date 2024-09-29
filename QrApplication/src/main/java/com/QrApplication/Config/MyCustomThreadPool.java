@@ -3,8 +3,9 @@ package com.QrApplication.Config;
 import java.util.concurrent.Executor;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -13,6 +14,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 public class MyCustomThreadPool implements AsyncConfigurer{
 	
 	@Override
+	@Bean
+	@Primary  // Mark this bean as primary
 	public Executor getAsyncExecutor() {
 		
 		Integer MAX_POOL_SIZE = 10;
@@ -31,7 +34,7 @@ public class MyCustomThreadPool implements AsyncConfigurer{
 		taskExecutor.setThreadNamePrefix(PRIFIX);
 		taskExecutor.initialize();
 		
-		return null;
+		return taskExecutor;
 	}
 	
 	@Override

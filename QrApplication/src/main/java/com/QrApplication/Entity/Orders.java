@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import com.QrApplication.Enum.AppType;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -76,6 +77,13 @@ public class Orders {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private AppType appType;
+	
+	@Column(nullable = false)
+	private String restroName;
 
 	@Override
 	public String toString() {

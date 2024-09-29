@@ -21,6 +21,7 @@ public class VendorOpenController {
 	
 	@GetMapping("qr/getVendor/{id}")
 	ResponseType getById(@PathVariable UUID id){
+		System.err.println(id);
 		return this.vendorService.getById(id);
 	}
 }
