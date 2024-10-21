@@ -25,6 +25,7 @@ import com.QrApplication.Filter.CsrfCookieFilter;
 import com.QrApplication.Filter.JWTTokenGanrateFilter;
 import com.QrApplication.Filter.JWTTokenValidatorFilter;
 import com.QrApplication.Filter.RequestValidationBeforeFilter;
+import com.QrApplication.SecurityConstant.SecurityConstent;
 
 
 @Configuration
@@ -32,6 +33,8 @@ import com.QrApplication.Filter.RequestValidationBeforeFilter;
 public class SecurityConfig{
 	
 
+
+	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
@@ -63,20 +66,22 @@ public class SecurityConfig{
 //             } }
 		    ))
 		   
-		    .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 		    .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
 		    .addFilterAfter(new JWTTokenGanrateFilter(),BasicAuthenticationFilter.class)
 		    .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
+//		    .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+		   
 		   
 			.sessionManagement(ss->ss. sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.csrf(csrf->csrf 
-			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-			.csrfTokenRepository(cookieCsrfTokenRepository)
+			.csrf(csrf->csrf.disable()            
+//			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+//			.csrfTokenRepository(cookieCsrfTokenRepository)
 	
-			.ignoringRequestMatchers("signup","/login","/custom-login","user","login" ,"/ws/**" , "api/v1/qr/order/**" , "saveProduct")  )
+//			.ignoringRequestMatchers("signup","/login","/custom-login","user","login" ,"/ws/**" , "api/v1/qr/order/**" , "saveProduct"  )
+			)
 			.authorizeHttpRequests(request->request
 					.requestMatchers("/s1/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("test", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**","saveProduct" ,"Orders/**" , "product/**" , "vendor/**").permitAll()
+					.requestMatchers("test", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**", "saveProduct" , "vendor/**" , "productlist/**" , "product/**").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
@@ -98,11 +103,14 @@ public class SecurityConfig{
 		coreConfig.setExposedHeaders(Arrays.asList("Authorization" , "x-xsrf-token"));
 		
 		List<String> urls = new ArrayList<>();
-		urls.add("http://192.168.1.16:*");
+		urls.add("http://192.168.90.204:ws/*");
+		urls.add("http://192.168.90.204:*");
+		urls.add("http://192.168.1.11:*");
 		urls.add("http://192.168.1.18:*");
 		urls.add("http://localhost:*");	
 		urls.add("http://localhost:8080/ws");
-		urls.add("http://192.168.1.21:*");
+		urls.add("http://"+SecurityConstent.IP_ADDRESS+":*");
+//		urls.add("http://"+SecurityConstent.IP_ADDRESS+":4201/*");
 	
 		coreConfig.setAllowCredentials(true);
 		coreConfig.setAllowedOriginPatterns(urls);

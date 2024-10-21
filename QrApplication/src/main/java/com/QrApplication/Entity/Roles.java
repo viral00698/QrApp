@@ -3,7 +3,6 @@ package com.QrApplication.Entity;
 import java.util.UUID;
 
 import com.QrApplication.Enum.UserType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +36,6 @@ public class Roles {
 	
 	@ManyToOne
 	@JoinColumn(name = "id")
-	@JsonBackReference
+//	@JsonBackReference(value = "role-user")
 	private Users users;
 }

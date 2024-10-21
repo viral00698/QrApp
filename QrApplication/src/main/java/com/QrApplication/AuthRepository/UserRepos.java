@@ -17,5 +17,8 @@ public interface UserRepos extends JpaRepository<Users, UUID> {
 	
 	@Query(value = "select id from users where email=:email" , nativeQuery = true)
 	UUID getIdByEmail(@Param("email")  String email);
+	
+	@Query(value = "select * from users where email=:email" , nativeQuery = true)
+	Users getUserByEmail(@Param("email")  String email);
 
 }

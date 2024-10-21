@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.QrApplication.Entity.Product;
 import com.QrApplication.Entity.Users;
@@ -21,4 +23,15 @@ public interface ProductRepository extends JpaRepository<Product, UUID>{
 		public List<Product> checkAviliblityInDb(@Param("ids") List<UUID> ids);
 	 	
 	 	public List<Product> findByVendor(Vendor vendor);
+	 	
+	 	@Modifying
+	 	@Transactional
+	 	@Query("UPDATE Product p SET p.status = :status WHERE p.id = :id AND p.vendor.vendorId = :vendorId")
+	 	int updateProductStatus(@Param("status") Boolean status , @Param("id") UUID id, @Param("vendorId") UUID vendorId);
+
+	 	@Modifying
+	 	@Transactional
+	 	@Query("DELETE FROM Product p WHERE p.productId = :id AND p.vendor.vendorId = :vender")
+		public int deleteProductByid(@Param("id") UUID id, @Param("vender") UUID vender);
+
 }

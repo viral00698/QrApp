@@ -1,6 +1,8 @@
 package com.QrApplication.AuthService;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +20,8 @@ import com.QrApplication.Entity.Roles;
 import com.QrApplication.Entity.Users;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Enum.UserType;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class CreateUserService implements UsersBhehavior {
@@ -77,4 +81,35 @@ public class CreateUserService implements UsersBhehavior {
 				"Invalid Request" , HttpStatus.BAD_REQUEST);
 
 	}
+
+	public ResponseType getUsername(HttpServletRequest request) {
+		  String header = request.getHeader("Authorization");
+	        byte[] base64Token = header.substring(6).getBytes(StandardCharsets.UTF_8);
+	        byte[] decoded;
+	        try {
+	            decoded = Base64.getDecoder().decode(base64Token);
+	        } catch (IllegalArgumentException e) {
+	           return null;
+	        }
+	        String token = new String(decoded, StandardCharsets.UTF_8);
+	        int delim = token.indexOf(":");
+	        if (delim == -1) {
+	           return null;
+	        }
+	        String username = token.substring(0, delim);
+	        if(!username.equals(null))
+	        	return ResponseType.ResponseGenerator(RequestStatus.success, "Login successfully" , getUserDetails(username));
+	        else
+	        	return ResponseType.ResponseGenerator(RequestStatus.success, "Login un-successfully");
+	}
+
+	@Override
+	public Users getUserDetails(String username) {
+		try {
+			return userRepos.getUserByEmail(username);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 }

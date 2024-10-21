@@ -12,24 +12,29 @@ import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.AuthSecret.UsersBhehavior;
 import com.QrApplication.Enum.RequestStatus;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestController
 public class AuthController {
 	
 	@Autowired
 	private UsersBhehavior usersBhehavior;
-
+	
 	@PostMapping("signup")
 	public ResponseType createUser(@RequestBody UsersDto usersDto) {
 		return this.usersBhehavior.createUser(usersDto);
 	}
 	
 	@GetMapping("login")
-	public ResponseType login() {
-		return ResponseType.ResponseGenerator(RequestStatus.success, "Login successfully" , HttpStatus.ACCEPTED);
+	public ResponseType login( HttpServletRequest request) {
+		return usersBhehavior.getUsername(request);
+		
 	}
 	
 	@GetMapping("logout")
 	public ResponseType logout(){
 		return ResponseType.ResponseGenerator(RequestStatus.success, "Logout successfully" ,HttpStatus.ACCEPTED);
 	}
+	
+	
 }

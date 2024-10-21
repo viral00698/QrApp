@@ -2,7 +2,6 @@ package com.QrApplication.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +20,6 @@ import com.QrApplication.Dtos.OrderResponse;
 import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.Product;
-import com.QrApplication.Enum.AppType;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
 import com.QrApplication.Enum.RequestStatus;
@@ -63,11 +61,11 @@ public class OrderPlaceService implements OrderPlace {
 	 * @param orders
 	 * @return
 	 */
-	public CompletableFuture<ResponseType> place(Orders order) {
+	public ResponseType place(Orders order) {
 
 		
-		return CompletableFuture.supplyAsync(()->{
-			
+//		return CompletableFuture.supplyAsync(()->{
+//			
 			OrderResponse orderResponse = new OrderResponse();
 			
 			//step:0 check vender status and venderid is valid
@@ -81,8 +79,9 @@ public class OrderPlaceService implements OrderPlace {
 		
 			System.err.println(products);
 			if (products.isEmpty()) {
-				System.err.println("null values");
-				return null;
+				System.err.println("null values viral");
+//			
+				return ResponseType.ResponseGenerator(RequestStatus.success , "Item Not Avilable", orderResponse);
 			}
 
 			// step:2 make bill here
@@ -121,10 +120,10 @@ public class OrderPlaceService implements OrderPlace {
 			
 			return ResponseType.ResponseGenerator(RequestStatus.success , "Order Placed", orderResponse);
 			
-		}).exceptionally(ex->{
-			System.err.println(ex.getMessage());
-			 return ResponseType.ResponseGenerator(RequestStatus.failure, "Error while placing order");
-		});
+//		}).exceptionally(ex->{
+//			 System.err.println(ex.getMessage());
+//			 return ResponseType.ResponseGenerator(RequestStatus.failure, "Error while placing order");
+//		});
 		
 	
 
@@ -179,10 +178,9 @@ public class OrderPlaceService implements OrderPlace {
 
 	@Override
 	public void sendOrderNotificationVendor(Orders orders) {
-		String user="viral";
-//		messagingTemplate.convertAndSend("/app/sendMessage", orders);
-		messagingTemplate.convertAndSend("/queue/viral/messages", orders);
-//		messagingTemplate.convertAndSendToUser(user, "/queue/messages", orders);
+		
+		System.err.println("order place");
+		messagingTemplate.convertAndSend("/queue/"+ orders.getVendorId() +"/messages", orders);
 		System.err.println("placed");
 
 	}

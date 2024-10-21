@@ -5,9 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 
 import lombok.Getter;
@@ -32,6 +32,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 //@Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Users {
 	
 	@Id
@@ -50,15 +51,15 @@ public class Users {
 	private Date createDate;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonManagedReference
+//	@JsonManagedReference(value = "vendor-user")
 	private Vendor vendorDetails;
 	
 	@OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
-	@JsonManagedReference
+//	@JsonManagedReference(value = "role-user")
 	private Set<Roles> role = new HashSet<>();
 	
 	@OneToMany(mappedBy = "users", fetch = FetchType.EAGER)
-	@JsonManagedReference
+//	@JsonManagedReference(value = "user-vender")
 	private Set<Address> address= new HashSet<>();
 	
 //	@OneToMany(mappedBy = "users", fetch = FetchType.EAGER)

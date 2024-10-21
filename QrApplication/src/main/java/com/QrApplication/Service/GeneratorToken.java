@@ -17,7 +17,7 @@ public class GeneratorToken implements TokenGeneratorSubject {
 		
 		String tmp ="";
 		if(prifix.length()>=3) {
-			tmp = prifix.substring(0,3);
+			tmp = prifix.substring(0,3).toUpperCase();
 		}
 		
 		String r1 = this.generator(TOKEN_BATCH_SIZE);

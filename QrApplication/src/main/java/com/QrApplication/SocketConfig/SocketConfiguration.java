@@ -1,6 +1,5 @@
 package com.QrApplication.SocketConfig;
 
-import java.util.ArrayList;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -9,8 +8,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import com.QrApplication.Filter.JwtSocketHandshakeInterceptor;
+import com.QrApplication.SecurityConstant.SecurityConstent;
 
-import io.jsonwebtoken.lang.Arrays;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -27,7 +26,7 @@ public class SocketConfiguration implements WebSocketMessageBrokerConfigurer{
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
         .addInterceptors(new JwtSocketHandshakeInterceptor())   
-        .setAllowedOrigins("http://192.168.1.16:4202" , "http://localhost:4201","http://192.168.1.16:4201")
+        .setAllowedOrigins("http://"+SecurityConstent.IP_ADDRESS +":4202" , "http://localhost:4201","http://"+SecurityConstent.IP_ADDRESS+":4201")
         .withSockJS();
 //        ArrayList<String> urls = new ArrayList<>();
 //        urls.add("http://localhost:4200");

@@ -2,7 +2,6 @@ package com.QrApplication.AuthSecret;
 
 import org.springframework.http.HttpStatus;
 import com.QrApplication.Enum.RequestStatus;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
