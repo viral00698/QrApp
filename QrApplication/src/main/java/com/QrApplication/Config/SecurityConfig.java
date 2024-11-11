@@ -103,8 +103,8 @@ public class SecurityConfig{
 		coreConfig.setExposedHeaders(Arrays.asList("Authorization" , "x-xsrf-token"));
 		
 		List<String> urls = new ArrayList<>();
-		urls.add("http://192.168.90.204:ws/*");
-		urls.add("http://192.168.90.204:*");
+		urls.add("http://192.168.92.204:ws/*");
+		urls.add("http://192.168.92.204:*");
 		urls.add("http://192.168.1.11:*");
 		urls.add("http://192.168.1.18:*");
 		urls.add("http://localhost:*");	

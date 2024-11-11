@@ -15,51 +15,54 @@ public class OrderBillingService implements BillingSubject {
 	@Autowired
 	private VenderRepository vendorRepository;
 
-	private double totalAmount;
+	
 
 	@Override
 	public BillingDtos billGenerator(Orders orders) {
 
-		BillingDtos billingDtos = new BillingDtos();
-		
-		this.vendorRepository.findById(orders.getVendorId()).ifPresent(vendor -> {
 
-			// step:1 totalAmount of all items
+	    BillingDtos billingDtos = new BillingDtos();
+	    final double[] totalAmount = {0.0}; // Use an array to hold totalAmount
 
-			orders.getOrderDetails().stream().forEach(item -> {
-				System.err.println("qty" + item.getQuntity());
-				double tmp = item.getAmount() * item.getQuntity();
-				this.totalAmount = this.totalAmount + tmp;
-				System.err.println(this.totalAmount);
-			});
+	    this.vendorRepository.findById(orders.getVendorId()).ifPresent(vendor -> {
 
-			// step:2 calculate gst from total amount;
-			double gst = (vendor.getGstCharge() / 100) * totalAmount;
-			gst = Double.parseDouble(String.format("%.2f", gst));
-			System.err.println(gst);
-			// step:3 calculate sgst from total amount;
-			double sgst = (vendor.getSgstCharge() / 100) * totalAmount;
-			sgst = Double.parseDouble(String.format("%.2f", sgst));
-			System.err.println(sgst);
+	        // Step 1: Calculate total amount of all items
+	        orders.getOrderDetails().forEach(item -> {
+	            double tmp = item.getAmount() * item.getQuntity();
+	            totalAmount[0] += tmp;
+	            System.err.println("Total amount of items: " + totalAmount[0]);
+	        });
 
-			// step:4 calculate ResturentCharge from total amount;
-			double restoCharge = (vendor.getResturentCharge() / 100) * totalAmount;
-			restoCharge = Double.parseDouble(String.format("%.2f", restoCharge));
-			System.err.println(restoCharge);
-			// add all this amount
+	        // Step 2: Calculate GST from total amount
+	        double gst = (vendor.getGstCharge() / 100) * totalAmount[0];
+	        gst = Double.parseDouble(String.format("%.2f", gst));
+	        System.err.println("GST: " + gst);
 
-			billingDtos.setGst(gst);
-			billingDtos.setResturentCharge(restoCharge);
-			billingDtos.setSgst(sgst);
-//			billingDtos.setTotalAmount(totalAmount);
-			billingDtos.setAmount(totalAmount);
-			totalAmount = totalAmount + gst + sgst + restoCharge;
-			totalAmount = Double.parseDouble(String.format("%.2f", totalAmount));
-			billingDtos.setTotalAmount(totalAmount);
-			
-		});
+	        // Step 3: Calculate SGST from total amount
+	        double sgst = (vendor.getSgstCharge() / 100) * totalAmount[0];
+	        sgst = Double.parseDouble(String.format("%.2f", sgst));
+	        System.err.println("SGST: " + sgst);
 
-		return billingDtos;
+	        // Step 4: Calculate restaurant charge from total amount
+	        double restoCharge = (vendor.getResturentCharge() / 100) * totalAmount[0];
+	        restoCharge = Double.parseDouble(String.format("%.2f", restoCharge));
+	        System.err.println("Restaurant Charge: " + restoCharge);
+
+	        // Populate BillingDtos fields
+	        billingDtos.setGst(gst);
+	        billingDtos.setSgst(sgst);
+	        billingDtos.setResturentCharge(restoCharge);
+	        billingDtos.setAmount(totalAmount[0]);
+
+	        // Calculate final total with all charges
+	        double finalTotalAmount = totalAmount[0] + gst + sgst + restoCharge;
+	        finalTotalAmount = Double.parseDouble(String.format("%.2f", finalTotalAmount));
+	        billingDtos.setTotalAmount(finalTotalAmount);
+
+	    });
+
+	    return billingDtos;
+
 	}
 
 }

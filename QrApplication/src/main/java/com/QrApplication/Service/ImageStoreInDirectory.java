@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.Dtos.ProductImagePath;
@@ -16,6 +17,10 @@ import com.QrApplication.Entity.Product;
 @Service
 public class ImageStoreInDirectory {
 
+	
+//	@Value("${product.image.dir}")
+//	private String PRODUCT_IAMGE_DIR;
+	
 	public void saveProductImage(Product product) {
 
 		Path directoryPath = Paths.get(ProductImagePath.PRODUCT_IAMGE_DIR);

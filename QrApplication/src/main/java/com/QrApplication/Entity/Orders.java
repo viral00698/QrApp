@@ -17,6 +17,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -82,6 +84,17 @@ public class Orders {
 	
 	@Column(nullable = false)
 	private String restroName;
+	
+//	private UUID tableId;
+	
+	private String customerName;
+	
+//	@OneToOne(mappedBy = "orders")
+//	private TableOrder tableOrder;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "tableId")
+	private TableOrder tableOrder;
 
 	@Override
 	public String toString() {
@@ -89,7 +102,7 @@ public class Orders {
 				+ customerMobileNo + ", token_no=" + token_no + ", txid=" + txid + ", orderDetails=" + orderDetails
 				+ ", orderAt=" + orderAt + ", payment_mode=" + payment_mode + ", vendorId=" + vendorId
 				+ ", totelAmount=" + totelAmount + ", gst=" + gst + ", sgst=" + sgst + ", restaurantsCharge="
-				+ restaurantsCharge + ", orderStatus=" + orderStatus + "]";
+				+ restaurantsCharge + ", orderStatus=" + orderStatus + ", tableOrder=" + tableOrder + "]";
 	}
 	
 	

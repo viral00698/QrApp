@@ -48,7 +48,7 @@ public class JWTTokenGanrateFilter extends OncePerRequestFilter{
 							.setSubject("JWT Token")
 							.setIssuer(SecurityConstent.TOKEN_ISSUER)
 							.setIssuedAt(new Date())
-							.setExpiration(new Date( new Date().getTime() + 900000))
+							.setExpiration(new Date( new Date().getTime() + 9000000))
 							.signWith(key).compact();
 							response.setHeader(SecurityConstent.JWT_HEADER, jwt);
 			}

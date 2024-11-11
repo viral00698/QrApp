@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -20,6 +19,7 @@ import com.QrApplication.Dtos.OrderResponse;
 import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.Product;
+import com.QrApplication.Entity.TableOrder;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
 import com.QrApplication.Enum.RequestStatus;
@@ -183,6 +183,12 @@ public class OrderPlaceService implements OrderPlace {
 		messagingTemplate.convertAndSend("/queue/"+ orders.getVendorId() +"/messages", orders);
 		System.err.println("placed");
 
+	}
+
+	@Override
+	public void sendOrderNotificationVendorTable(TableOrder tableOrder) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

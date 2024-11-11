@@ -28,4 +28,15 @@ public class OrderStatsticsController {
 		}
 		
 	}
+	
+	@PostMapping("/findTop10MostOrderedItems")
+	public ResponseType findTop10MostOrderedItemsByVendorAndDateRange(@RequestBody StatisticsDto statisticsDto) {
+		
+		if(statisticsDto!=null) {
+			return this.ordersService.findTop10MostOrderedItemsByVendorAndDateRange(statisticsDto);
+		}
+		else {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+		}
+	}	
 }

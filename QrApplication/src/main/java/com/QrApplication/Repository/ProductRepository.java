@@ -24,6 +24,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID>{
 	 	
 	 	public List<Product> findByVendor(Vendor vendor);
 	 	
+	 	public List<Product> findByVendorAndStatus(Vendor vendor , Boolean status);
+	 	
 	 	@Modifying
 	 	@Transactional
 	 	@Query("UPDATE Product p SET p.status = :status WHERE p.id = :id AND p.vendor.vendorId = :vendorId")

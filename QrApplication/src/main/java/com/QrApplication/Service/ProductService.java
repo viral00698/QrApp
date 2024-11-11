@@ -30,7 +30,7 @@ public class ProductService {
 		if (!id.equals(null)) {
 			Vendor vendor = new Vendor();
 			vendor.setVendorId(id);
-			List<Product> res = this.productRepository.findByVendor(vendor);
+			List<Product> res = this.productRepository.findByVendorAndStatus(vendor , true);
 			if (!res.isEmpty()) {
 				return ResponseType.ResponseGenerator(RequestStatus.success, res);
 			}

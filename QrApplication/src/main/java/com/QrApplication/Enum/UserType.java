@@ -4,5 +4,10 @@ public enum UserType {
 	USER,
 	ADMIN,
 	SUPER,
-	VENDER,	
+	VENDER,
+	MANAGER,
+	EMPLOYEE,
+	COOK,
+	CHEF,
+	WAITER
 }

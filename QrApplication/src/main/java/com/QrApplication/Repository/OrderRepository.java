@@ -28,14 +28,14 @@ public interface OrderRepository extends JpaRepository<Orders, UUID>{
 
 	List<Orders> findByCustomerUUID(UUID customerId);
 	
-//	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = CONFIRMED OR o.orderStatus=PREPARING) AND FUNCTION('DATE', o.orderAt) =:date AND vendorId = :id")
-	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = 'CONFIRMED' OR o.orderStatus = 'PREPARING') AND o.vendorId = :id")
+//	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = CONFIRMED OR o.orderStatus=PREPARING OR o.orderStatus=ONGOING) AND FUNCTION('DATE', o.orderAt) =:date AND vendorId = :id")
+	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = 'CONFIRMED' OR o.orderStatus = 'PREPARING' OR o.orderStatus = 'ONGOING') AND o.vendorId = :id")
 	List<Orders> getOngoinOrder(@Param("id") UUID id);
 
 	
 	@Query("SELECT COUNT(o.orderId) AS totalOrderCount, " +
 		       "SUM(o.totelAmount) AS totalRevenue, " +
-		       "COUNT(CASE WHEN o.orderStatus = CONFIRMED THEN 1 END) AS totalActiveOrderCount " +
+		       "COUNT(CASE  WHEN o.orderStatus IN ('CONFIRMED', 'ONGOING')  THEN 1 END) AS totalActiveOrderCount " +
 		       "FROM Orders o " +
 		       "WHERE o.vendorId = :vendorId " +
 		       "AND o.orderAt BETWEEN :startDate AND :endDate")
@@ -43,5 +43,12 @@ public interface OrderRepository extends JpaRepository<Orders, UUID>{
 		                                 @Param("startDate") Date startDate, 
 		                                 @Param("endDate") Date endDate);
 
+	
+	@Query("SELECT o FROM Orders o JOIN o.tableOrder t WHERE t.tableId = :tableId AND t.tableStatus='BOOKED' AND  o.vendorId=:vendorId AND o.orderStatus = 'ONGOING'")
+	List<Orders> getTableOnGoingOrder(@Param("tableId") UUID tableId , @Param("vendorId") UUID vendorId);
+
+	List<Orders> findByVendorId(UUID fromString);
+	
+	
 	
 }

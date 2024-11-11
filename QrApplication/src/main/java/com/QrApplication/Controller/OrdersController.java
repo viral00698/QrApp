@@ -30,6 +30,16 @@ public class OrdersController {
 		return this.ordersService.getOngoinOrder(UUID.fromString(id));
 	}
 	
+	
+	@GetMapping("getbyTableOrder/{vedeorId}/{tableId}")
+	ResponseType getTableOnGoingOrder(@PathVariable String vedeorId , @PathVariable String tableId){
+		return this.ordersService.getTableOnGoingOrder(vedeorId , tableId);
+	}
+	
+	@GetMapping("getbyOrdersByVendorId/{vedeorId}")
+	ResponseType getbyOrdersByVendorId(@PathVariable String vedeorId){
+		return this.ordersService.getbyOrdersByVendorId(vedeorId);
+	}
  
 	
  
