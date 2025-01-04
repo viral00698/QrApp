@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,12 @@ public class ImageStoreInDirectory {
 //	@Value("${product.image.dir}")
 //	private String PRODUCT_IAMGE_DIR;
 	
+	@Autowired
+	private ProductImagePath productImagePath;
+	
 	public void saveProductImage(Product product) {
 
-		Path directoryPath = Paths.get(ProductImagePath.PRODUCT_IAMGE_DIR);
+		Path directoryPath = Paths.get(productImagePath.getProductImageDir());
 		if (!Files.exists(directoryPath)) {
 			try {
 				Files.createDirectories(directoryPath);
@@ -35,7 +39,7 @@ public class ImageStoreInDirectory {
 		if (product != null && product.getImage() != null && !product.getImage().equals("Image")) {
 			String tmp = product.getImage().split(",")[1];
 			byte[] imageBytes = Base64.getDecoder().decode(tmp);
-			String path = ProductImagePath.PRODUCT_IAMGE_DIR + product.getItemName() + ".png";
+			String path = productImagePath.getProductImageDir() + product.getItemName() + ".png";
 			;
 			try (FileOutputStream fos = new FileOutputStream(new File(path))) {
 				fos.write(imageBytes);
@@ -53,7 +57,7 @@ public class ImageStoreInDirectory {
 	public String getProductImage(String image) {
 
 		try {
-			String imagePath = ProductImagePath.PRODUCT_IAMGE_DIR + image + ".png";
+			String imagePath = productImagePath.getProductImageDir() + image + ".png";
 			Path path = Paths.get(imagePath);
 
 			if (Files.exists(path)) {

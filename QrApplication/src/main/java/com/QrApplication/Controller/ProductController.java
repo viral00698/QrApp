@@ -40,9 +40,8 @@ public class ProductController {
 	}
 
 	@PostMapping("/addProduct")
-	public ResponseType addProduct(Product product) {
-
-		System.err.println(product);
+	public ResponseType addProduct(@RequestBody Product product) {
+	
 		return this.productService.addProduct( product);
 	}
 	

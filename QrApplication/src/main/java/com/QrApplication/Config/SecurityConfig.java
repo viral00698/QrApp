@@ -81,7 +81,7 @@ public class SecurityConfig{
 			)
 			.authorizeHttpRequests(request->request
 					.requestMatchers("/s1/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("test", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**", "saveProduct" , "vendor/**" , "productlist/**" , "product/**").permitAll()
+					.requestMatchers("test","pg", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**", "saveProduct" , "vendor/**" , "productlist/**" , "product/**").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
@@ -103,8 +103,12 @@ public class SecurityConfig{
 		coreConfig.setExposedHeaders(Arrays.asList("Authorization" , "x-xsrf-token"));
 		
 		List<String> urls = new ArrayList<>();
-		urls.add("http://192.168.92.204:ws/*");
-		urls.add("http://192.168.92.204:*");
+		urls.add("http://15.207.112.139");
+		urls.add("http://192.168.255.204:ws/*");
+		urls.add("http://192.168.255.204:*");
+		urls.add("http://15.207.112.139:ws/*");
+		urls.add("http://65.0.124.230:ws");
+		urls.add("http://3.109.202.129:*");
 		urls.add("http://192.168.1.11:*");
 		urls.add("http://192.168.1.18:*");
 		urls.add("http://localhost:*");	

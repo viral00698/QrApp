@@ -41,9 +41,10 @@ public class ProductService {
 	}
 
 	public ResponseType getOrdersByCustomerId(String customerId) {
-		if (!customerId.equals(null))
+		if (!customerId.equals(null)) {
 			return ResponseType.ResponseGenerator(RequestStatus.success,
 					this.orderRepository.findByCustomerUUID(UUID.fromString(customerId)));
+		}
 		return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
 
 	}
@@ -83,6 +84,8 @@ public class ProductService {
 
 	public ResponseType addProduct(Product product) {
 
+		
+		
 		if (product.getProductId() != null) {
 			Product alreadyExist = this.productRepository.findById(product.getProductId()).get();
 			alreadyExist.setAmount(product.getAmount());
@@ -107,6 +110,7 @@ public class ProductService {
 
 		}
 
+	
 		if (product != null && product.getAmount() != null && product.getVendor() != null
 				&& product.getProductId() == null) {
 
@@ -119,8 +123,10 @@ public class ProductService {
 			if (tmp != null)
 				return ResponseType.ResponseGenerator(RequestStatus.success, "Product added successfully");
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Failed to add product. Please try again!");
+		}else {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Request Invalid");
 		}
-		return ResponseType.ResponseGenerator(RequestStatus.success, "Request Invalid");
+		
 	}
 
 	public ResponseType deleteProductByid(UUID id, UUID vender) {
