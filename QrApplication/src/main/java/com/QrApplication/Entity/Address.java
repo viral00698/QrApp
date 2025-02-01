@@ -2,7 +2,8 @@ package com.QrApplication.Entity;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,12 +11,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Entity
-@Builder
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "addressId")
 public class Address {
 	
 	@Id
@@ -30,12 +30,12 @@ public class Address {
 	
 	@ManyToOne
 	@JoinColumn(name = "id")
-	@JsonBackReference
+//	@JsonBackReference
 	private Users users;
 	
 	@ManyToOne
 	@JoinColumn(name = "vendorId")
-	@JsonBackReference
+//	@JsonBackReference(value = "user-vender")
 	private Vendor vendor;
 	
 }

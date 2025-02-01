@@ -6,5 +6,7 @@ import lombok.Data;
 @Builder
 @Data
 public class OrderDto {
+	
+	
 
 }

@@ -2,7 +2,6 @@ package com.QrApplication.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -26,8 +25,8 @@ import com.QrApplication.Filter.CsrfCookieFilter;
 import com.QrApplication.Filter.JWTTokenGanrateFilter;
 import com.QrApplication.Filter.JWTTokenValidatorFilter;
 import com.QrApplication.Filter.RequestValidationBeforeFilter;
+import com.QrApplication.SecurityConstant.SecurityConstent;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -65,20 +64,22 @@ public class SecurityConfig{
 //             } }
 		    ))
 		   
-		    .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 		    .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
 		    .addFilterAfter(new JWTTokenGanrateFilter(),BasicAuthenticationFilter.class)
 		    .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
+//		    .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+		   
 		   
 			.sessionManagement(ss->ss. sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.csrf(csrf->csrf 
-			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-			.csrfTokenRepository(cookieCsrfTokenRepository)
+			.csrf(csrf->csrf.disable()            
+//			.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
+//			.csrfTokenRepository(cookieCsrfTokenRepository)
 	
-			.ignoringRequestMatchers("signup","/login","/custom-login","user","login")  )
+//			.ignoringRequestMatchers("signup","/login","/custom-login","user","login" ,"/ws/**" , "api/v1/qr/order/**" , "saveProduct"  )
+			)
 			.authorizeHttpRequests(request->request
 					.requestMatchers("/s1/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("test", "signup", "user","/login","login").permitAll()
+					.requestMatchers("test","pg", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**", "saveProduct" , "vendor/**" , "productlist/**" , "product/**").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
@@ -93,14 +94,32 @@ public class SecurityConfig{
 	
 	CorsConfigurationSource corsConfiguration() {
 		CorsConfiguration coreConfig = new CorsConfiguration();
-		coreConfig.setAllowedOrigins(Arrays.asList("http://localhost:*"));
+	
+//		coreConfig.setAllowedOrigins(Arrays.asList("http://localhost:*" , "http://localhost:8080/ws" , "ws://localhost:8080/ws","ws://localhost:4200/ws"	));
 		coreConfig.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "UPDATE", "OPTIONS"));
-		coreConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "Authorization")); //Authorization
+		coreConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "Authorization" , "x-xsrf-token")); //Authorization
 		coreConfig.setExposedHeaders(Arrays.asList("Authorization" , "x-xsrf-token"));
 		
 		List<String> urls = new ArrayList<>();
+		urls.add("http://15.207.112.139");
+		urls.add("http://192.168.155.204:ws/*");
+		urls.add("http://192.168.155.204:*");
+		urls.add("http://13.232.231.237");
+		urls.add("http://13.232.231.237:80/*");
+		urls.add("http://13.232.231.237:8080/*");
+		urls.add("http://15.207.112.139:ws/*");
+		urls.add("http://65.0.124.230:ws");
+		urls.add("http://3.109.202.129:*");
+		urls.add("http://192.168.155.204");
+		urls.add("http://192.168.52.204:*");
+		urls.add("http://localhost:*");	
+		urls.add("http://vitts.in:*");	
+		urls.add("https://vitts.in:*");	
 		
-		urls.add("http://localhost:*");
+		urls.add("http://localhost:8080/ws");
+		urls.add("http://"+SecurityConstent.IP_ADDRESS+":*");
+//		urls.add("http://"+SecurityConstent.IP_ADDRESS+":4201/*");
+	
 		coreConfig.setAllowCredentials(true);
 		coreConfig.setAllowedOriginPatterns(urls);
 

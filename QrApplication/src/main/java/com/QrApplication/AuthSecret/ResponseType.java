@@ -2,7 +2,7 @@ package com.QrApplication.AuthSecret;
 
 import org.springframework.http.HttpStatus;
 import com.QrApplication.Enum.RequestStatus;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
@@ -13,13 +13,13 @@ public class ResponseType {
 	private HttpStatus statusCode;
 	private RequestStatus status;
 	
-	@JsonBackReference
-	private Object object;
+	@JsonManagedReference
+	private Object data;
 
 	public static ResponseType ResponseGenerator(RequestStatus requestStatus, String message, Object object) {
 		ResponseType obj = new ResponseType();
 		obj.setStatus(requestStatus);
-		obj.setObject(object);
+		obj.setData(object);
 		obj.setMessage(message);
 
 		return obj;
@@ -39,18 +39,28 @@ public class ResponseType {
 			HttpStatus status) {
 		ResponseType obj = new ResponseType();
 		obj.setStatus(requestStatus);
-		obj.setObject(object);
+		obj.setData(object);
 		obj.setMessage(message);
 		obj.setStatusCode(status);
 
 		return obj;
 	}
-
+	
 	public static ResponseType ResponseGenerator(RequestStatus requestStatus, String message) {
 		ResponseType obj = new ResponseType();
 		obj.setStatus(requestStatus);
 		obj.setMessage(message);
 		return obj;
 	}
+	
+	public static ResponseType ResponseGenerator(RequestStatus requestStatus, Object data) {
+		ResponseType obj = new ResponseType();
+		obj.setStatus(requestStatus);
+		obj.setData(data);;
+		return obj;
+	}
+	
+	
+	
 
 }

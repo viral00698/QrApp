@@ -52,7 +52,8 @@ public class RequestValidationBeforeFilter implements Filter {
 //                        return;
 //                    }
                 } catch (IllegalArgumentException e) {
-                    throw new BadCredentialsException("Failed to decode basic authentication token");
+                	System.err.println(e.getMessage());
+//                    throw new BadCredentialsException("Failed to decode basic authentication token");
                 }
             }
 		
