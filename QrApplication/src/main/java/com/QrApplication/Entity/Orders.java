@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.QrApplication.Enum.AppType;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
+import com.QrApplication.Enum.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
@@ -20,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -89,12 +91,19 @@ public class Orders {
 	
 	private String customerName;
 	
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "pay_id")
+	private PaymentDetail paymentDetail;
+	
 //	@OneToOne(mappedBy = "orders")
 //	private TableOrder tableOrder;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "tableId")
 	private TableOrder tableOrder;
+	
+	@Enumerated(EnumType.STRING)
+	private PaymentStatus paymentStatus;
 
 	@Override
 	public String toString() {

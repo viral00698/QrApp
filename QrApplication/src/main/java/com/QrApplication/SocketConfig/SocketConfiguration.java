@@ -26,7 +26,16 @@ public class SocketConfiguration implements WebSocketMessageBrokerConfigurer{
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
         .addInterceptors(new JwtSocketHandshakeInterceptor())   
-        .setAllowedOrigins("http://"+SecurityConstent.IP_ADDRESS +":8080","http://"+SecurityConstent.IP_ADDRESS,"http://"+SecurityConstent.IP_ADDRESS +":81","http://"+SecurityConstent.IP_ADDRESS +":80","http://"+SecurityConstent.IP_ADDRESS +":4202" , "http://localhost:4201","http://"+SecurityConstent.IP_ADDRESS+":4201")
+        .setAllowedOrigins("http://192.168.155.204:4201",
+        		"http://"+SecurityConstent.IP_ADDRESS +":8080",
+        		"http://"+SecurityConstent.IP_ADDRESS,
+        		"http://"+SecurityConstent.IP_ADDRESS +":81",
+        		"http://"+SecurityConstent.IP_ADDRESS +":80",
+        		"http://"+SecurityConstent.IP_ADDRESS +":4202",
+        		"http://vitts.in",
+        		"https://vitts.in",
+        		"http://localhost:4201",
+        		"http://"+SecurityConstent.IP_ADDRESS+":4201" )
         .withSockJS();
 //        ArrayList<String> urls = new ArrayList<>();
 //        urls.add("http://localhost:4200");

@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.BillingDtos;
 import com.QrApplication.Dtos.OrderResponse;
+import com.QrApplication.Dtos.RazorpayOrder;
 import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.Product;
 import com.QrApplication.Entity.TableOrder;
-import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Interface.BillingSubject;
@@ -29,6 +29,7 @@ import com.QrApplication.Interface.TokenGeneratorSubject;
 import com.QrApplication.PreLoded.VendorMap;
 import com.QrApplication.Repository.OrderDetailsRepository;
 import com.QrApplication.Repository.OrderRepository;
+import com.QrApplication.Repository.PaymentDetailRepos;
 import com.QrApplication.Repository.ProductRepository;
 
 @Service
@@ -56,6 +57,10 @@ public class OrderPlaceService implements OrderPlace {
 
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
+	
+	@Autowired
+	private CreatePaymentOrder createPaymentOrder;
+	
 
 	/**
 	 * @param orders
@@ -112,11 +117,40 @@ public class OrderPlaceService implements OrderPlace {
 				this.sendOrderNotificationVendor(orders);
 
 			}
-
+				
 			// step:3 make payment if ONLINE;
-//			if (this.checkPaymentMode(orders).equals(PaymentMode.ONLINE)) {
-	//
-//			}
+			if (this.checkPaymentMode(orders).equals(PaymentMode.ONLINE)) {
+				
+				
+				String prefix = vendorMap.getVenderStorenameByUUID(orders.getVendorId());
+//				System.err.println(prefix);
+				if (prefix.equals("DEF")) {
+					this.vendorMap.getVenderMapFromDB();
+					prefix = vendorMap.getVenderStorenameByUUID(orders.getVendorId());
+				}
+				String token = this.generatorToken.generatorToken(prefix);
+				System.err.println("Token:"+ token);
+				System.err.println(order.getPayment_mode());
+				// step:3.1 save order details in database
+				Orders savedOrder = this.orderDetailsSave(orders, billingDtos, token);
+				orderResponse.setOrders(savedOrder);
+				orderResponse.setOrderDetails(order.getOrderDetails());
+				orderResponse.setBill(billingDtos);
+				orderResponse.setToken(token);
+				// step:3.2 send request to the vender for order accept;
+				// send notification to the vendor
+				
+				try {
+					RazorpayOrder obj =  createPaymentOrder.createOrder(orders); // razorpay order
+					orderResponse.setRazorpayOrder(obj);
+					this.sendOrderNotificationVendor(orders);
+					
+				} catch (Exception e) {
+					System.err.println("Getting error while createing order for razorpay"+ e.getMessage());
+					return ResponseType.ResponseGenerator(RequestStatus.success , "Getting error while createing order for razorpay", orders);
+				}
+				
+			}
 			
 			return ResponseType.ResponseGenerator(RequestStatus.success , "Order Placed", orderResponse);
 			
@@ -126,7 +160,6 @@ public class OrderPlaceService implements OrderPlace {
 //		});
 		
 	
-
 	}
 
 	@Override
@@ -148,7 +181,7 @@ public class OrderPlaceService implements OrderPlace {
 	@Override
 	public Orders orderDetailsSave(Orders orders, BillingDtos billingDtos, String token) {
 
-		orders.setOrderStatus(OrderStatus.WAIT_FOR_APPROVE);
+//		orders.setOrderStatus(OrderStatus.WAIT_FOR_APPROVE);
 		orders.setToken_no(token);
 		orders.setTxid("00000000");
 		orders.setTotelAmount(billingDtos.getTotalAmount());
@@ -179,7 +212,7 @@ public class OrderPlaceService implements OrderPlace {
 	@Override
 	public void sendOrderNotificationVendor(Orders orders) {
 		
-		System.err.println("order place");
+//		System.err.println("order place");
 		messagingTemplate.convertAndSend("/queue/"+ orders.getVendorId() +"/messages", orders);
 		System.err.println("placed");
 

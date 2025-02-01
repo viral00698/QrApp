@@ -12,4 +12,5 @@ public enum OrderStatus {
 	WAIT_FOR_APPROVE,
 	APPROVED,
 	COMPLETE,
+	FAIELD
 }	

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.QrApplication.Entity.Orders;
+import com.QrApplication.Entity.PaymentDetail;
 import com.QrApplication.Enum.OrderStatus;
+import com.QrApplication.Enum.PaymentStatus;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Orders, UUID>{
@@ -49,6 +51,16 @@ public interface OrderRepository extends JpaRepository<Orders, UUID>{
 
 	List<Orders> findByVendorId(UUID fromString);
 	
-	
+	@Modifying
+	@Transactional
+	@Query("UPDATE Orders o SET o.orderStatus = :orderStatus, o.txid = :txn_id, o.paymentStatus = :pay_status, o.paymentDetail = :payment_details WHERE o.orderId = :orderId")
+	int updateOnlineOrderStatus(
+	    @Param("orderId") UUID orderId, 
+	    @Param("orderStatus") OrderStatus orderStatus, 
+	    @Param("txn_id") String txn_id, 
+	    @Param("pay_status") PaymentStatus pay_status,
+	    @Param("payment_details") PaymentDetail payment_details
+	);
+
 	
 }

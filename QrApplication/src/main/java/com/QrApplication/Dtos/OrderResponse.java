@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Entity.Orders;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,8 @@ public class OrderResponse {
 	private Orders orders;
 	
 	private String token;
+	
+	private RazorpayOrder razorpayOrder;
+	
+	private RazorpayResponse razorpayResponse;
 }

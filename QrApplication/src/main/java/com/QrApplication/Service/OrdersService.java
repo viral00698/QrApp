@@ -1,11 +1,9 @@
 package com.QrApplication.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +47,7 @@ public class OrdersService {
 
 		if (!id.equals(null)) {
 
-			Date date = new Date();
+//			Date date = new Date();
 			List<Orders> res = this.orderRepository.getOngoinOrder(id);
 
 			if (!res.isEmpty()) {
@@ -63,8 +61,8 @@ public class OrdersService {
 
 	public ResponseType getOrderByDateRange(List<Date> date, UUID venderId) {
 		if (!date.isEmpty() && date.size() == 2 && venderId != null) {
-			Date d1 = date.get(0);
-			Date d2 = date.get(1);
+//			Date d1 = date.get(0);
+//			Date d2 = date.get(1);
 
 			System.err.println(date + " " + venderId);
 		}
