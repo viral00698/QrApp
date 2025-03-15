@@ -1,5 +1,6 @@
 package com.QrApplication.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -61,6 +62,12 @@ public interface OrderRepository extends JpaRepository<Orders, UUID>{
 	    @Param("pay_status") PaymentStatus pay_status,
 	    @Param("payment_details") PaymentDetail payment_details
 	);
+
+	@Query("SELECT o FROM Orders o JOIN FETCH o.orderDetails WHERE o.token_no = :token AND o.vendorId=:vedeorId")
+	Orders getOrdersByTokenAndVendor(@Param("vedeorId") UUID vedeorId,@Param("token") String token);
+
+	@Query("SELECT o FROM Orders o JOIN FETCH o.orderDetails WHERE o.vendorId = :vedeorId AND o.orderAt >= :last24Hours")
+	List<Orders> getLastTwoDayOrder(@Param("vedeorId") UUID vedeorId , @Param("last24Hours") LocalDateTime last24Hours );
 
 	
 }

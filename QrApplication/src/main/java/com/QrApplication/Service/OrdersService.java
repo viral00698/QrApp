@@ -1,5 +1,6 @@
 package com.QrApplication.Service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -121,17 +122,44 @@ public class OrdersService {
 		try {
 			Pageable topTen = PageRequest.of(0, 10);
 			List<Object> mostOrderedItems = orderDetailsRepository.findTop10MostOrderedItemsByVendorAndDateRange(
-				 statisticsDto.getVenderId(),statisticsDto.getStartDate(),statisticsDto.getEndDate(),topTen);
-
-			System.err.println(mostOrderedItems);
-			System.err.println("hello");
+					statisticsDto.getVenderId(), statisticsDto.getStartDate(), statisticsDto.getEndDate(), topTen);
 			return ResponseType.ResponseGenerator(RequestStatus.success, mostOrderedItems);
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseType.ResponseGenerator(RequestStatus.failure, "Getting Error While findTop10MostOrderedItemsByVendorAndDateRange");
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure,
+					"Getting Error While findTop10MostOrderedItemsByVendorAndDateRange");
 		}
+
+	}
+
+	public ResponseType getOrdersByTokenAndVendor(String vedeorId, String token) {
+		try {
+			if (!vedeorId.isBlank() && !token.isBlank()) {
+				Orders orders = this.orderRepository.getOrdersByTokenAndVendor(UUID.fromString(vedeorId), token);
+
+				return ResponseType.ResponseGenerator(RequestStatus.success, orders);
+			} else {
+				return ResponseType.ResponseGenerator(RequestStatus.failure, "Given parameter is invalid");
+			}
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while getRecord by token");
+		}
+
+	}
+
+	public ResponseType getLastTwoDayOrder(String vedeorId) {
 		
-		
+		try {
+			if (!vedeorId.isBlank()) {
+				LocalDateTime last24Hours = LocalDateTime.now().minusHours(24);
+				List<Orders>  orders = this.orderRepository.getLastTwoDayOrder(UUID.fromString(vedeorId) , last24Hours);
+				
+				return ResponseType.ResponseGenerator(RequestStatus.success, orders);
+			} else {
+				return ResponseType.ResponseGenerator(RequestStatus.failure, "Given parameter is invalid");
+			}
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while getLastTwoDayOrder by vedeorId");
+		}
 	}
 
 }

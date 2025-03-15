@@ -40,6 +40,16 @@ public class OrdersController {
 	ResponseType getbyOrdersByVendorId(@PathVariable String vedeorId){
 		return this.ordersService.getbyOrdersByVendorId(vedeorId);
 	}
+	
+	@GetMapping("getOrdersByTokenAndVendor/{vedeorId}/{token}")
+	ResponseType getbyOrdersByVendorId(@PathVariable String vedeorId , @PathVariable String token){
+		return this.ordersService.getOrdersByTokenAndVendor(vedeorId , token);
+	}
+	
+	@GetMapping("getLastTwoDayOrder/{vedeorId}")
+	ResponseType getLastTwoDayOrder(@PathVariable String vedeorId){
+		return this.ordersService.getLastTwoDayOrder(vedeorId);
+	}
  
 	
  

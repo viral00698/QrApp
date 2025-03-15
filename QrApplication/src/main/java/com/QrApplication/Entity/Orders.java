@@ -9,6 +9,9 @@ import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
 import com.QrApplication.Enum.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.razorpay.QrCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +25,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -104,6 +108,10 @@ public class Orders {
 	
 	@Enumerated(EnumType.STRING)
 	private PaymentStatus paymentStatus;
+	
+	@Transient
+	@JsonSerialize(using = ToStringSerializer.class)
+	private QrCode qrCode;
 
 	@Override
 	public String toString() {
