@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.OrderResponse;
+import com.QrApplication.Dtos.QrCodeResponseDto;
 import com.QrApplication.Dtos.RazorpayOrder;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.PaymentDetail;
@@ -17,6 +18,7 @@ import com.QrApplication.Interface.Payment;
 import com.QrApplication.Repository.OrderRepository;
 import com.QrApplication.Repository.PaymentDetailRepos;
 import com.razorpay.Order;
+import com.razorpay.QrCode;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
@@ -37,7 +39,8 @@ public class CreatePaymentOrder implements Payment {
 			RazorpayClient razorpay = new RazorpayClient("rzp_test_Ega5AUS7osq9QI", "zcSRpCMCpnnys3frq4hH3tfx");
 
 			JSONObject orderRequest = new JSONObject();
-			orderRequest.put("amount", orders.getTotelAmount() * 100);
+			System.err.println(Math.round(orders.getTotelAmount() * 100));
+			orderRequest.put("amount",Math.round(orders.getTotelAmount() * 100));
 			orderRequest.put("currency", "INR");
 			orderRequest.put("receipt", orders.getOrderId());
 //			orderRequest.put("entity", orders);
@@ -84,7 +87,7 @@ public class CreatePaymentOrder implements Payment {
 				details.setSignature(razorpayResponse.getRazorpayResponse().getRazorpay_signature());
 
 				PaymentDetail paymentDetail = savePaymentDetail(details);
-				System.err.println(paymentDetail);
+				
 				if (paymentDetail != null) {
 					razorpayResponse.getOrders().setTxid(paymentDetail.getOrderId());
 					razorpayResponse.getOrders().setPaymentDetail(paymentDetail);
@@ -151,6 +154,34 @@ public class CreatePaymentOrder implements Payment {
 	
 	public PaymentDetail savePaymentDetail(PaymentDetail paymentDetail) {
 		return paymentDetailRepos.save(paymentDetail);
+	}
+
+	@Override
+	public QrCode createQr(Orders orders) {
+		
+		RazorpayClient razorpay;
+		try {
+		razorpay = new RazorpayClient("rzp_test_Ega5AUS7osq9QI", "zcSRpCMCpnnys3frq4hH3tfx");
+	
+		JSONObject qrRequest = new JSONObject();
+		qrRequest.put("type","upi_qr");
+		qrRequest.put("name",orders.getRestroName());
+		qrRequest.put("usage","single_use");
+		qrRequest.put("fixed_amount",true);
+		qrRequest.put("payment_amount",Math.round(orders.getTotelAmount() * 100));
+//		qrRequest.put("customer_id",orders.getOrderId());
+		
+		Long expireTime = (System.currentTimeMillis() / 1000) + (10 * 60); // Convert to seconds
+
+		qrRequest.put("close_by",expireTime);
+		
+		QrCode qrcode = razorpay.qrCode.create(qrRequest);
+	
+		return qrcode;
+		} catch (RazorpayException e) {
+			return null;
+		}
+		
 	}
 
 }
