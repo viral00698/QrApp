@@ -21,12 +21,14 @@ import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Enum.TableStatus;
 import com.QrApplication.Interface.BillingSubject;
 import com.QrApplication.Interface.OrderPlace;
+import com.QrApplication.Interface.Payment;
 import com.QrApplication.Interface.TokenGeneratorSubject;
 import com.QrApplication.PreLoded.VendorMap;
 import com.QrApplication.Repository.OrderDetailsRepository;
 import com.QrApplication.Repository.OrderRepository;
 import com.QrApplication.Repository.ProductRepository;
 import com.QrApplication.Repository.TableOrderRepository;
+import com.razorpay.QrCode;
 
 @Service
 public class TableOrderPlaceService implements OrderPlace {
@@ -51,6 +53,9 @@ public class TableOrderPlaceService implements OrderPlace {
 
 	@Autowired
 	private VendorMap vendorMap;
+	
+	@Autowired
+	private Payment payment;
 
 	@Autowired
 	private TableOrderService tableOrderService;
@@ -220,16 +225,18 @@ public class TableOrderPlaceService implements OrderPlace {
 				saveOrder.setOrderStatus(OrderStatus.COMPLETE);
 				saveOrder.setTotelAmount(billingDtos.getTotalAmount());
 				
-				System.err.println(saveOrder);
+//				System.err.println(saveOrder);
 				Orders tmp = orderRepository.save(saveOrder);
-				System.err.println(tmp);
+				QrCode qrCode =  payment.createQr(orders);
+//				tmp.setQrCode(qrCode);
+				System.err.println(qrCode);
+				
 				if(tmp!=null) {
+					tmp.setQrCode(qrCode);
 					return ResponseType.ResponseGenerator(RequestStatus.success, tmp);
-				}else {
-					System.err.println("viral");
 				}
-			}
 			
+			}
 		}catch (Exception e) {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invoice Not Ganreted");
 		}
