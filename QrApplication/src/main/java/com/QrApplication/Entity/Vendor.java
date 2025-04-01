@@ -46,6 +46,10 @@ public class Vendor {
 	private Boolean status;
 	private Date createAt;
 	
+	private String upa;
+	private String rk;
+	private String sk;
+	
 //	@OneToMany(mappedBy = "vendorDetails", fetch = FetchType.EAGER)
 //	@JsonManagedReference(value = "vendor-user")
 //	@JsonIgnore

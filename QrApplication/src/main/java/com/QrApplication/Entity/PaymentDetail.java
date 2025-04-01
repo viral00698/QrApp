@@ -15,11 +15,11 @@ public class PaymentDetail {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID pay_id;
+	private UUID pay_id; // refId also
 	
 	
 	@Column(nullable = false)
-	private String paymentId;
+	private String paymentId; //txn id also
 	
 	@Column(nullable = false)
 	private String orderId;

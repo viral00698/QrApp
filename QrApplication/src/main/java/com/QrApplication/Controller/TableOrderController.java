@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.TableOrder;
 import com.QrApplication.Enum.RequestStatus;
+import com.QrApplication.Enum.TableStatus;
 import com.QrApplication.Service.TableOrderService;
 
 @RestController
@@ -51,4 +53,31 @@ public class TableOrderController {
 		}
 		return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
 	}
+	
+	@PostMapping("createRozerPayOrder")
+	public ResponseType createRozerpayOrderForTable(@RequestBody Orders orders) {
+
+		try {
+			if(orders!=null)
+				return this.tableOrderService.createRozerpayOrderForTable( orders);
+		}catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request"); 
+		}
+		return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+	}
+	
+	@PostMapping("updateTableStatus")
+	public ResponseType updateTableStatus(@RequestBody TableOrder tableOrder) {
+		try {
+			if(tableOrder!=null) {
+				return this.tableOrderService.updateTableStatus(tableOrder);
+			}
+				
+		}catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request"); 
+		}
+		return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+	}
+	
+	
 }

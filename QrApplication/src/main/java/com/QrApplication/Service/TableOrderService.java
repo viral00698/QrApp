@@ -7,8 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.BillingDtos;
+import com.QrApplication.Dtos.OrderResponse;
+import com.QrApplication.Dtos.RazorpayOrder;
+import com.QrApplication.Entity.Orders;
+import com.QrApplication.Entity.PaymentDetail;
 import com.QrApplication.Entity.TableOrder;
+import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.RequestStatus;
+import com.QrApplication.Interface.BillingSubject;
+import com.QrApplication.Repository.OrderRepository;
+import com.QrApplication.Repository.PaymentDetailRepos;
 import com.QrApplication.Repository.TableOrderRepository;
 
 @Service
@@ -16,6 +25,19 @@ public class TableOrderService {
 
 	@Autowired
 	private TableOrderRepository tableOrderRepository;
+	
+	
+	@Autowired
+	private OrderRepository orderRepository;
+	
+	@Autowired
+	private BillingSubject billingSubject;
+	
+	@Autowired
+	private PaymentDetailRepos paymentDetailRepos;
+	
+	@Autowired
+	private CreatePaymentOrder createPaymentOrder;
 	
 	public ResponseType addTable(TableOrder tableOrder) {
 		
@@ -63,6 +85,49 @@ public class TableOrderService {
 	public TableOrder findByTableId(UUID tableId) {
 		return tableOrderRepository.findByTableId(tableId);
 	}
+
+	public PaymentDetail savePaymentDetail(PaymentDetail paymentDetail) {
+		return paymentDetailRepos.save(paymentDetail);
+	}
+	
+	public ResponseType createRozerpayOrderForTable(Orders reqOrder) {
+		
+//		OrderResponse orderResponse = new OrderResponse();
+		
+		try {
+			
+			Orders orders = this.orderRepository.getOrdersByOrderIdAndVendorId(reqOrder.getVendorId() , reqOrder.getOrderId());
+			BillingDtos billingDtos = this.billingSubject.billGenerator(orders);
+			orders.setOrderStatus(OrderStatus.COMPLETE);
+			
+			orders.setGst(billingDtos.getGst());
+			orders.setSgst(billingDtos.getSgst());
+			orders.setRestaurantsCharge(billingDtos.getResturentCharge());
+			orders.setTotelAmount(billingDtos.getTotalAmount());
+			
+			PaymentDetail paymentDetail = new PaymentDetail();
+			paymentDetail.setOrderId(reqOrder.getOrderId().toString());
+			paymentDetail.setPaymentId(reqOrder.getTxnNo());
+			paymentDetail.setSignature(reqOrder.getRefNo());
+			
+			savePaymentDetail(paymentDetail);
+			
+			this.orderRepository.save(orders);
+			
+			
+//			RazorpayOrder obj =  createPaymentOrder.createOrder(orders); // razorpay order
+//			orderResponse.setRazorpayOrder(obj);
+//			orderResponse.setOrders(orders);
+			
+			return ResponseType.ResponseGenerator(RequestStatus.success, "Payment Details added");
+			
+		} catch (Exception e) {
+			System.err.println("Getting error while createing order for razorpay"+ e.getMessage());
+			return ResponseType.ResponseGenerator(RequestStatus.success , "Getting error while createing order for razorpay");
+		}
+	}
+	
+	
 	
 	
 

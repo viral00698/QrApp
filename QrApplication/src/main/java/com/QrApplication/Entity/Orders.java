@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import com.QrApplication.Dtos.BillingDtos;
 import com.QrApplication.Enum.AppType;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
@@ -112,6 +113,16 @@ public class Orders {
 	@Transient
 	@JsonSerialize(using = ToStringSerializer.class)
 	private QrCode qrCode;
+	
+	@Transient
+	private String txnNo;
+	
+	@Transient
+	private String refNo;
+	
+
+	@Transient
+	private BillingDtos billingDtos;
 
 	@Override
 	public String toString() {

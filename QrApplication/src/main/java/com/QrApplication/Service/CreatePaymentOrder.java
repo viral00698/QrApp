@@ -36,7 +36,7 @@ public class CreatePaymentOrder implements Payment {
 	public RazorpayOrder createOrder(Orders orders) {
 
 		try {
-			RazorpayClient razorpay = new RazorpayClient("rzp_test_Ega5AUS7osq9QI", "zcSRpCMCpnnys3frq4hH3tfx");
+			RazorpayClient razorpay = new RazorpayClient("rzp_test_gD5uJZvpUqS4ka", "pquKsUVF0RWckDL9RNzinfCH");
 
 			JSONObject orderRequest = new JSONObject();
 			System.err.println(Math.round(orders.getTotelAmount() * 100));
@@ -76,7 +76,7 @@ public class CreatePaymentOrder implements Payment {
 			options.put("razorpay_payment_id", razorpayResponse.getRazorpayResponse().getRazorpay_payment_id());
 			options.put("razorpay_signature", razorpayResponse.getRazorpayResponse().getRazorpay_signature());
 
-			boolean isValidSignature = Utils.verifyPaymentSignature(options, "zcSRpCMCpnnys3frq4hH3tfx");
+			boolean isValidSignature = Utils.verifyPaymentSignature(options, "pquKsUVF0RWckDL9RNzinfCH");
 
 			if (isValidSignature) {
 				System.out.println("Payment verified successfully!");
@@ -161,7 +161,7 @@ public class CreatePaymentOrder implements Payment {
 		
 		RazorpayClient razorpay;
 		try {
-		razorpay = new RazorpayClient("rzp_test_Ega5AUS7osq9QI", "zcSRpCMCpnnys3frq4hH3tfx");
+		razorpay = new RazorpayClient("rzp_test_gD5uJZvpUqS4ka", "pquKsUVF0RWckDL9RNzinfCH");
 	
 		JSONObject qrRequest = new JSONObject();
 		qrRequest.put("type","upi_qr");

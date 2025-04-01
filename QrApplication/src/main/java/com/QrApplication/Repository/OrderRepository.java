@@ -65,6 +65,9 @@ public interface OrderRepository extends JpaRepository<Orders, UUID>{
 
 	@Query("SELECT o FROM Orders o JOIN FETCH o.orderDetails WHERE o.token_no = :token AND o.vendorId=:vedeorId")
 	Orders getOrdersByTokenAndVendor(@Param("vedeorId") UUID vedeorId,@Param("token") String token);
+	
+	@Query("SELECT o FROM Orders o JOIN FETCH o.orderDetails WHERE o.vendorId = :vedeorId AND o.orderId=:orderId")
+	Orders getOrdersByOrderIdAndVendorId(@Param("vedeorId") UUID vedeorId ,@Param("orderId") UUID orderId);
 
 	@Query("SELECT o FROM Orders o JOIN FETCH o.orderDetails WHERE o.vendorId = :vedeorId AND o.orderAt >= :last24Hours")
 	List<Orders> getLastTwoDayOrder(@Param("vedeorId") UUID vedeorId , @Param("last24Hours") LocalDateTime last24Hours );

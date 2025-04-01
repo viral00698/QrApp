@@ -11,10 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.BillingDtos;
 import com.QrApplication.Dtos.StatisticsDto;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.RequestStatus;
+import com.QrApplication.Interface.BillingSubject;
 import com.QrApplication.Repository.OrderDetailsRepository;
 import com.QrApplication.Repository.OrderRepository;
 
@@ -24,6 +26,9 @@ public class OrdersService {
 	@Autowired
 	private OrderRepository orderRepository;
 
+	@Autowired
+	private BillingSubject billingSubject;
+	
 	@Autowired
 	private OrderDetailsRepository orderDetailsRepository;
 
@@ -94,9 +99,19 @@ public class OrdersService {
 				UUID tid = UUID.fromString(tableId);
 
 				List<Orders> list = this.orderRepository.getTableOnGoingOrder(tid, vid);
-				if (!list.isEmpty()) {
-					return ResponseType.ResponseGenerator(RequestStatus.success, list);
+			
+				if(list.isEmpty()) {
+					return ResponseType.ResponseGenerator(RequestStatus.success,
+							"Currently, there are no orders available for approval.");
 				}
+				Orders orders = list.get(0);
+				BillingDtos billingDtos = this.billingSubject.billGenerator(orders);
+				orders.setBillingDtos(billingDtos);
+				
+				if (orders!=null) {
+					return ResponseType.ResponseGenerator(RequestStatus.success, orders);
+				}
+			
 			}
 			return ResponseType.ResponseGenerator(RequestStatus.success,
 					"Currently, there are no orders available for approval.");
