@@ -79,7 +79,7 @@ public class SecurityConfig{
 			)
 			.authorizeHttpRequests(request->request
 					.requestMatchers("/s1/**").hasAnyRole("USER","ADMIN")
-					.requestMatchers("test","pg", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**", "saveProduct" , "vendor/**" , "productlist/**" , "product/**").permitAll()
+					.requestMatchers("test","pg","pg1","/invoice/**", "signup", "user","/login","login","/ws/**","api/v1/qr/order/**", "saveProduct" , "vendor/**" , "productlist/**" , "product/**").permitAll()
 				    .anyRequest().authenticated())
 			
 			.httpBasic(Customizer.withDefaults())
@@ -103,20 +103,41 @@ public class SecurityConfig{
 		List<String> urls = new ArrayList<>();
 		urls.add("http://15.207.112.139");
 		urls.add("http://192.168.155.204:ws/*");
-		urls.add("http://192.168.155.204:*");
+		urls.add("http://192.168.1.10:*");
 		urls.add("http://13.232.231.237");
 		urls.add("http://13.232.231.237:80/*");
 		urls.add("http://13.232.231.237:8080/*");
-		urls.add("http://15.207.112.139:ws/*");
+		urls.add("http://192.168.1.10:ws/*");
 		urls.add("http://65.0.124.230:ws");
-		urls.add("http://3.109.202.129:*");
-		urls.add("http://192.168.155.204");
-		urls.add("http://192.168.52.204:*");
+		urls.add("http://192.168.196.204:*");
+		urls.add("http://0.0.0.0");
+		urls.add("http://127.0.0.1:80");
+		urls.add("http://qr.vitts.in/*");
+		urls.add("http://table.vitts.in/*");
+		urls.add("http://dash.vitts.in/*");
+		urls.add("http://back.vitts.in/*");
+		
+		urls.add("https://127.0.0.1:80/*");
+		urls.add("https://qr.vitts.in/*");
+		urls.add("https://table.vitts.in/*");
+		urls.add("https://dash.vitts.in/*");
+		urls.add("https://back.vitts.in/*");
+		
+		urls.add("http://qr.vitts.in/*");
+//		urls.add("http://192.168.1.10:*");
+		urls.add("http://0.0.0.0:4202/*");
+		urls.add("http://192.168.1.10:4202/*");
 		urls.add("http://localhost:*");	
 		urls.add("http://vitts.in:*");	
 		urls.add("https://vitts.in:*");	
 		
 		urls.add("http://localhost:8080/ws");
+		urls.add("http://qr.vitts.in/ws");
+		urls.add("https://qr.vitts.in/ws");
+		urls.add("http://table.vitts.in/ws");
+		urls.add("https://table.vitts.in/ws");
+		urls.add("http://dash.vitts.in/ws");
+		urls.add("https://dash.vitts.in/ws");
 		urls.add("http://"+SecurityConstent.IP_ADDRESS+":*");
 //		urls.add("http://"+SecurityConstent.IP_ADDRESS+":4201/*");
 	

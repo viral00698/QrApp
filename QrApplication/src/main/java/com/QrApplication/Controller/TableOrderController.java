@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.GenrateInvoiceDto;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.TableOrder;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Enum.TableStatus;
+import com.QrApplication.Service.InvoicePdfService;
 import com.QrApplication.Service.TableOrderService;
 
 @RestController
@@ -23,6 +25,9 @@ public class TableOrderController {
 
 	@Autowired
 	private TableOrderService tableOrderService;
+	
+	@Autowired
+	private InvoicePdfService invoicePdfService;
 	
 	@PostMapping("addTable")
 	public ResponseType addTable(@RequestBody TableOrder tableOrder) {
@@ -55,11 +60,11 @@ public class TableOrderController {
 	}
 	
 	@PostMapping("createRozerPayOrder")
-	public ResponseType createRozerpayOrderForTable(@RequestBody Orders orders) {
+	public ResponseType createRozerpayOrderForTable(@RequestBody GenrateInvoiceDto genrateInvoiceDto) {
 
 		try {
-			if(orders!=null)
-				return this.tableOrderService.createRozerpayOrderForTable( orders);
+			if(genrateInvoiceDto!=null)
+				return this.tableOrderService.createRozerpayOrderForTable( genrateInvoiceDto);
 		}catch (Exception e) {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request"); 
 		}
@@ -71,6 +76,19 @@ public class TableOrderController {
 		try {
 			if(tableOrder!=null) {
 				return this.tableOrderService.updateTableStatus(tableOrder);
+			}
+				
+		}catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request"); 
+		}
+		return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+	}
+	
+	@PostMapping("genrateInvoice")
+	public ResponseType genrateInvoice(@RequestBody GenrateInvoiceDto genrateInvoiceDto) {
+		try {
+			if(genrateInvoiceDto!=null) {
+				return this.invoicePdfService.print(genrateInvoiceDto);
 			}
 				
 		}catch (Exception e) {
