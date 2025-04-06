@@ -13,10 +13,6 @@ import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 
-//public class InvoicePdfService {
-//
-//}
-
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -38,6 +34,7 @@ import java.net.URLEncoder;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -49,11 +46,14 @@ public class InvoicePdfService {
 	
 	@Value("${product.logo.dir:/home/ubuntu/logo/}")
 	String logo;
+	
+	@Autowired
+	private TwilioSmsInvoice twilioSmsInvoice;
 
 	public ResponseType print(GenrateInvoiceDto genrateInvoiceDto) {
 		try {
 			String orderId = genrateInvoiceDto.getOrder().getOrderId().toString();
-			String first8Digits = orderId.length() > 8 ? orderId.substring(0, 8) : orderId;
+			String first8Digits  = orderId.length() > 8 ? orderId.substring(0, 8) : orderId;
 			String dest = invoiceDestinastion +"/invoice_"+first8Digits+".pdf";
 //			String dest = "D://test/receipt.pdf";
 //			String dest = "/home/ubuntu/myfile/receipt.pdf";
@@ -182,6 +182,9 @@ public class InvoicePdfService {
 
 			document.close();
 			System.out.println("PDF Receipt Created: " + dest);
+			
+			twilioSmsInvoice.sendSms(genrateInvoiceDto.getOrder().getOrderId() , genrateInvoiceDto.getOrder().getCustomerMobileNo());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
