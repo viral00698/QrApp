@@ -72,5 +72,17 @@ public interface OrderRepository extends JpaRepository<Orders, UUID>{
 	@Query("SELECT o FROM Orders o JOIN FETCH o.orderDetails WHERE o.vendorId = :vedeorId AND o.orderAt >= :last24Hours")
 	List<Orders> getLastTwoDayOrder(@Param("vedeorId") UUID vedeorId , @Param("last24Hours") LocalDateTime last24Hours );
 
+//	@Query(value = "SELECT order_status ,DATE(order_at) AS order_date, COUNT(order_id) AS total_orders " +
+//            "FROM public.orders " +
+//            "WHERE vendor_id = :vid " +
+//            "GROUP BY DATE(order_at) " +
+//            "ORDER BY order_date", nativeQuery = true)
 	
+	@Query(value="SELECT order_status,   order_at AS order_datetime, COUNT(order_id) AS total_orders FROM public.orders WHERE vendor_id = :vid GROUP BY order_at , order_status ORDER BY order_datetime" ,nativeQuery=true)
+	List<Object[]> countOrdersGroupByDay(@Param("vid") UUID vid);
+
+	@Query(value="SELECT customer_mobile_no, DATE(order_at) AS order_date, COUNT(*) AS order_count FROM public.orders GROUP BY customer_mobile_no, DATE(order_at) HAVING COUNT(*) > 0" , nativeQuery=true)
+	List<Object[]> customerInsides(UUID vid);
+
+
 }

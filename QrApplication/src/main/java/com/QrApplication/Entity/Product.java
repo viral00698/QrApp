@@ -2,9 +2,12 @@ package com.QrApplication.Entity;
 
 import java.util.UUID;
 
+import com.QrApplication.Enum.FoodCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,6 +45,9 @@ public class Product {
 	private Integer totalGram = 0;
 	
 	private Boolean jain;
+	
+	@Enumerated(EnumType.STRING)
+	private FoodCategory foodCategory;
 	
 	@Column
 	private Boolean vegNonVeg;

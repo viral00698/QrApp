@@ -177,4 +177,22 @@ public class OrdersService {
 		}
 	}
 
+	public ResponseType countOrdersGroupByDay(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.countOrdersGroupByDay(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching order by vedeorId");
+		}
+	}
+	
+	public ResponseType customerInsides(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.customerInsides(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching customerInsides by vedeorId");
+		}
+	}
+
 }

@@ -2,10 +2,13 @@ package com.QrApplication.Entity;
 
 import java.util.UUID;
 
+import com.QrApplication.Enum.FoodCategory;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,6 +38,8 @@ public class OrderDetails {
 	@Column(nullable = false)
 	private UUID productId;
 
+	@Enumerated(EnumType.STRING)
+	private FoodCategory foodCategory;
 	
 	@Column(nullable = false)
 	private Double amount;
