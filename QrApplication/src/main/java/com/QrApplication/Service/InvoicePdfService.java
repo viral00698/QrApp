@@ -29,11 +29,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,6 +52,8 @@ public class InvoicePdfService {
 	
 	@Autowired
 	private TwilioSmsInvoice twilioSmsInvoice;
+	
+	private static final Logger logger = LoggerFactory.getLogger(InvoicePdfService.class);
 
 	public ResponseType print(GenrateInvoiceDto genrateInvoiceDto) {
 		try {
@@ -67,8 +72,10 @@ public class InvoicePdfService {
 
 //			// Custom Font (Optional)
 //			PdfFont font = PdfFontFactory.createFont();
+			InputStream fontStream = getClass().getClassLoader().getResourceAsStream("DejaVuSans.ttf");
+			PdfFont font = PdfFontFactory.createFont(fontStream.readAllBytes(), PdfEncodings.IDENTITY_H);
 
-			PdfFont font = PdfFontFactory.createFont("src/main/resources/DejaVuSans.ttf", PdfEncodings.IDENTITY_H);
+//			PdfFont font = PdfFontFactory.createFont("src/main/resources/DejaVuSans.ttf", PdfEncodings.IDENTITY_H);
 
 //			ImageData imageData = ImageDataFactory.create(logo);
 //			Image logo = new Image(imageData).setWidth(15).setHeight(15); // Resize the logo
@@ -186,6 +193,7 @@ public class InvoicePdfService {
 			twilioSmsInvoice.sendSms(genrateInvoiceDto.getOrder().getOrderId() , genrateInvoiceDto.getOrder().getCustomerMobileNo());
 			
 		} catch (Exception e) {
+			   logger.error( e.getMessage() );
 			e.printStackTrace();
 		}
 		return ResponseType.ResponseGenerator(RequestStatus.success, "Ok");
