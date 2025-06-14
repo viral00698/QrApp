@@ -194,5 +194,42 @@ public class OrdersService {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching customerInsides by vedeorId");
 		}
 	}
+	
+	public ResponseType revenueByFoodCategory(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.revenueByFoodCategory(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching revenueByFoodCategory by vedeorId");
+		}
+	}
+	
+	public ResponseType orderStatictics(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.orderStatictics(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching orderStatictics by vedeorId");
+		}
+	}
+	
+	public ResponseType getLowestSellingItems(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.getLowestSellingItems(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching getLowestSellingItems by vedeorId");
+		}
+	}
+	
+	public ResponseType getTopSellingItems(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.getTopSellingItems(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching getTopSellingItems by vedeorId");
+		}
+	}
+
 
 }
