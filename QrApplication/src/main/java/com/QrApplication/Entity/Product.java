@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -58,6 +59,11 @@ public class Product {
 
 	@Column(nullable = false)
 	private Boolean status;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "offer_id" , nullable = true) // Foreign key in Product table
+	private Offer offer;
+
 	
 	private String image = "Image";
 	
