@@ -1,0 +1,69 @@
+package com.QrApplication.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Entity.Offer;
+import com.QrApplication.Enum.RequestStatus;
+import com.QrApplication.Repository.OfferRepository;
+
+@Service
+public class OfferService {
+	
+	@Autowired
+	private OfferRepository offerRepository;
+
+	public ResponseType createOffer(Offer offer) {
+		
+		try {
+			
+			if(offer.getOfferType()!=null && offer.getVendorId()!=null) {
+				offer.setCreateAt(new Date());
+				offerRepository.save(offer);
+				return ResponseType.ResponseGenerator(RequestStatus.success, "Offer saved");
+			}else {
+				return ResponseType.ResponseGenerator(RequestStatus.failure, "Data insuffcient");
+			}
+			
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Error getting while save offer data");
+		}
+	}
+
+	public ResponseType activeOffer(Offer offer) {
+		
+		return null;
+	}
+	
+	public ResponseType getOfferByVendor(UUID vendorId) {
+	    try {
+	        if (vendorId == null) {
+	            return ResponseType.ResponseGenerator(RequestStatus.failure, "Vendor ID must not be null.");
+	        }
+
+	        long currentMillis = System.currentTimeMillis();
+	        System.err.println(currentMillis);
+	        List<Offer> res = offerRepository.findByVendorIdAndIsActiveTrueAndExpireDateGreaterThan(vendorId, currentMillis);
+
+	        if (res.isEmpty()) {
+	            return ResponseType.ResponseGenerator(RequestStatus.success, "No active offers found.");
+	        }
+
+	        return ResponseType.ResponseGenerator(RequestStatus.success, res);
+
+	    } catch (Exception e) {
+	        e.printStackTrace(); // Optional: log to logger instead
+	        return ResponseType.ResponseGenerator(RequestStatus.failure, "Failed to fetch offers: " + e.getMessage());
+	    }
+	}
+
+	
+	
+	
+
+}
