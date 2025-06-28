@@ -47,7 +47,6 @@ public class OfferService {
 	        }
 
 	        long currentMillis = System.currentTimeMillis();
-	        System.err.println(currentMillis);
 	        List<Offer> res = offerRepository.findByVendorIdAndIsActiveTrueAndExpireDateGreaterThan(vendorId, currentMillis);
 
 	        if (res.isEmpty()) {

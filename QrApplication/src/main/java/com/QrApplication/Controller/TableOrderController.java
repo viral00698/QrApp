@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.GenrateInvoiceDto;
-import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.TableOrder;
 import com.QrApplication.Enum.RequestStatus;
-import com.QrApplication.Enum.TableStatus;
 import com.QrApplication.Service.InvoicePdfService;
 import com.QrApplication.Service.TableOrderService;
 

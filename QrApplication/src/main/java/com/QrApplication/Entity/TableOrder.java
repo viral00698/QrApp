@@ -3,6 +3,7 @@ package com.QrApplication.Entity;
 import java.util.UUID;
 
 import com.QrApplication.Enum.TableStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +16,7 @@ import lombok.Data;
 
 @Data
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TableOrder {
 
 	@Id

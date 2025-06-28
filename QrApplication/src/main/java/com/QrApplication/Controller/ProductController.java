@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.ProductDto;
 import com.QrApplication.Entity.Product;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Service.ProductService;
@@ -40,18 +41,18 @@ public class ProductController {
 	}
 
 	@PostMapping("/addProduct")
-	public ResponseType addProduct(@RequestBody Product product) {
+	public ResponseType addProduct(@RequestBody ProductDto product) {
 	
 		return this.productService.addProduct( product);
 	}
 	
 	@PostMapping("updateProductStatus")
-	public ResponseType updateProductStatus(@RequestBody Product product) {
-
-		if(product.getProductId() !=null && product.getVendor()!=null && product.getVendor().getVendorId()!=null && product.getStatus()!=null) {
+	public ResponseType updateProductStatus(@RequestBody ProductDto product) {
+		System.err.println(product);
+		if(product.getProductId() !=null && product.getVendorId()!=null) {
 			
 			UUID  id = product.getProductId();
-			UUID vender = product.getVendor().getVendorId();
+			UUID vender = product.getVendorId();
 			Boolean status = product.getStatus();
 			
 			return this.productService.updateProductStatus(id,vender,status);
@@ -61,16 +62,23 @@ public class ProductController {
 	}
 	
 	@PostMapping("deleteProductByid")
-	public ResponseType deleteProductByid(@RequestBody Product product) {
-	if(product.getProductId() !=null && product.getVendor()!=null && product.getVendor().getVendorId()!=null) {
-			
-			UUID  id = product.getProductId();
-			UUID vender = product.getVendor().getVendorId();
-			
-			return this.productService.deleteProductByid(id,vender);
+	public ResponseType deleteProductByid(@RequestBody ProductDto product) {
+		try {
+		    if (product !=null) {
+		        
+		        UUID productId = product.getProductId();
+		        UUID vendorId = product.getVendorId();
+
+		        return productService.deleteProductByid(productId, vendorId);
+		    }else {
+		    	 return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request" );
+
+		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		    return ResponseType.ResponseGenerator(RequestStatus.failure, "Error: " + e.getMessage());
 		}
-			
-		return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+
 	}
 	
 }

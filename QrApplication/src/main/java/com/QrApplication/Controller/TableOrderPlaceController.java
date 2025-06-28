@@ -23,7 +23,6 @@ public class TableOrderPlaceController {
 		if(orders.getOrderId()==null) {
 			return tableOrderPlaceService.place(orders);
 		}else {
-			System.err.println("ok");
 			return tableOrderPlaceService.addItem(orders);
 		}
 		

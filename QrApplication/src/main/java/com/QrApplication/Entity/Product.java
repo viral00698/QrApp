@@ -3,6 +3,8 @@ package com.QrApplication.Entity;
 import java.util.UUID;
 
 import com.QrApplication.Enum.FoodCategory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,10 +22,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
 
 	@Id
@@ -71,8 +75,10 @@ public class Product {
 	private Integer itemQty = 0; // for item increment only
 		
 //	@JsonBackReference(value = "product-vendor")
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vendor_id")
+	@JsonIgnore
 	private Vendor vendor;
 	
 //	@ManyToOne

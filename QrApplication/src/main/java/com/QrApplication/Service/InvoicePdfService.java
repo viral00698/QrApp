@@ -186,7 +186,8 @@ public class InvoicePdfService {
 			twilioSmsInvoice.sendSms(genrateInvoiceDto.getOrder().getOrderId() , genrateInvoiceDto.getOrder().getCustomerMobileNo());
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println("Getting error while pdf invoice ganarate " + e.getMessage());
+//			e.printStackTrace();
 		}
 		return ResponseType.ResponseGenerator(RequestStatus.success, "Ok");
 	}

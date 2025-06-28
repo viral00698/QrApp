@@ -120,8 +120,6 @@ public class Orders {
 	@Transient
 	private String refNo;
 	
-	private String OfferId;
-	
 
 	@Transient
 	private BillingDtos billingDtos;
