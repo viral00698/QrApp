@@ -20,6 +20,8 @@ public enum TableStatus {
 	    
 	    RESERVED,      // The table is reserved for a specific time but not yet in use
 	    
-	    ONGOING      // The table is reserved for a specific time but not yet in use
+	    ONGOING,      // The table is reserved for a specific time but not yet in use
+	    
+	    REMOVE
 	
 }

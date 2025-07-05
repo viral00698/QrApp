@@ -16,7 +16,9 @@ import com.QrApplication.Enum.TableStatus;
 @Repository
 public interface TableOrderRepository extends JpaRepository<TableOrder, UUID> {
 
-	List<TableOrder> findByVendorId(UUID vendorId);
+//	List<TableOrder> findByVendorId(UUID vendorId);
+	List<TableOrder> findByVendorIdAndTableStatusNot(UUID vendorId, TableStatus tableStatus);
+
 
 	@Modifying
 	@Transactional

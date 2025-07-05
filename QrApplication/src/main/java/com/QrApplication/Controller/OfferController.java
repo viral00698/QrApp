@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.OfferDto;
 import com.QrApplication.Entity.Offer;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Service.OfferService;
@@ -44,6 +45,11 @@ public class OfferController {
 	@GetMapping("getOfferByVendor/{vid}")
 	ResponseType getOfferByVendor(@PathVariable("vid") String vendorId) {
 		return offerService.getOfferByVendor(UUID.fromString(vendorId));
+	}
+	
+	@PostMapping("setOfferStatus")
+	ResponseType setOfferStatus(@RequestBody OfferDto offerDto) {
+		return offerService.setOfferStatus(offerDto);
 	}
 
 }

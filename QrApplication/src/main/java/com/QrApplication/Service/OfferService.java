@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.OfferDto;
 import com.QrApplication.Entity.Offer;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Repository.OfferRepository;
@@ -46,8 +47,8 @@ public class OfferService {
 	            return ResponseType.ResponseGenerator(RequestStatus.failure, "Vendor ID must not be null.");
 	        }
 
-	        long currentMillis = System.currentTimeMillis();
-	        List<Offer> res = offerRepository.findByVendorIdAndIsActiveTrueAndExpireDateGreaterThan(vendorId, currentMillis);
+//	        long currentMillis = System.currentTimeMillis();
+	        List<Offer> res = offerRepository.findByVendorId(vendorId);
 
 	        if (res.isEmpty()) {
 	            return ResponseType.ResponseGenerator(RequestStatus.success, "No active offers found.");
@@ -61,8 +62,19 @@ public class OfferService {
 	    }
 	}
 
-	
-	
-	
+	public ResponseType setOfferStatus(OfferDto offerDto) {
+		try {
+			
+			int res = offerRepository.setOfferStatus(offerDto.getIsActive() , offerDto.getVendorId() , offerDto.getOfferId());
+			if(res > 0) {
+				  return ResponseType.ResponseGenerator(RequestStatus.success, "Offer Status Update");
+			}
+			
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geting Error while update offer status");
+		}
+		 return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Requset");
+	}
+
 
 }
