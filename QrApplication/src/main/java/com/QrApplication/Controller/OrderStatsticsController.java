@@ -66,4 +66,50 @@ public class OrderStatsticsController {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
 		}
 	}
+	
+	@GetMapping("/revenueByFoodCategory/{vid}")
+	public ResponseType revenueByFoodCategory(@PathVariable("vid") String vid) {
+		
+		if(vid!=null) {
+			return this.ordersService.revenueByFoodCategory(UUID.fromString(vid));
+		}
+		else {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+		}
+	}
+	
+	@GetMapping("/orderStatictics/{vid}")
+	public ResponseType orderStatictics(@PathVariable("vid") String vid) {
+		
+		if(vid!=null) {
+			return this.ordersService.orderStatictics(UUID.fromString(vid));
+		}
+		else {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+		}
+	}
+	
+	@GetMapping("/getTopSellingItems/{vid}")
+	public ResponseType getTopSellingItems(@PathVariable("vid") String vid) {
+		
+		if(vid!=null) {
+			return this.ordersService.getTopSellingItems(UUID.fromString(vid));
+		}
+		else {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+		}
+	}
+	
+	@GetMapping("/getLowestSellingItems/{vid}")
+	public ResponseType getLowestSellingItems(@PathVariable("vid") String vid) {
+		
+		if(vid!=null) {
+			return this.ordersService.getLowestSellingItems(UUID.fromString(vid));
+		}
+		else {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+		}
+	}
+
+
 }

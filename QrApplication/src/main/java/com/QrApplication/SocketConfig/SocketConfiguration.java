@@ -31,9 +31,22 @@ public class SocketConfiguration implements WebSocketMessageBrokerConfigurer{
         		"http://"+SecurityConstent.IP_ADDRESS,
         		"http://"+SecurityConstent.IP_ADDRESS +":81",
         		"http://"+SecurityConstent.IP_ADDRESS +":80",
+        		"https://qr.vitts.in",
+        		"https://table.vitts.in",
+        		"https://back.vitts.in",
+        		"https://dash.vitts.in",
+        		
+        		"https://qr.vitts.in",
+        		"https://table.vitts.in",
+        		"https://back.vitts.in",
+        		"https://dash.vitts.in",
+        		
+        		"http://"+SecurityConstent.IP_ADDRESS +":4202",
         		"http://"+SecurityConstent.IP_ADDRESS +":4202",
         		"http://vitts.in",
         		"https://vitts.in",
+        		"http://localhost:80",
+        		"http://127.0.0.1:80",
         		"http://localhost:4201",
         		"http://"+SecurityConstent.IP_ADDRESS+":4201" )
         .withSockJS();

@@ -15,10 +15,12 @@ import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Entity.Orders;
 import com.QrApplication.Entity.Product;
 import com.QrApplication.Entity.TableOrder;
+import com.QrApplication.Enum.OfferType;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.PaymentMode;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Enum.TableStatus;
+import com.QrApplication.Factory.OfferFactory;
 import com.QrApplication.Interface.BillingSubject;
 import com.QrApplication.Interface.OrderPlace;
 import com.QrApplication.Interface.Payment;
@@ -26,21 +28,15 @@ import com.QrApplication.Interface.TokenGeneratorSubject;
 import com.QrApplication.PreLoded.VendorMap;
 import com.QrApplication.Repository.OrderDetailsRepository;
 import com.QrApplication.Repository.OrderRepository;
-import com.QrApplication.Repository.ProductRepository;
-import com.QrApplication.Repository.TableOrderRepository;
 import com.razorpay.QrCode;
 
 @Service
 public class TableOrderPlaceService implements OrderPlace {
 
-	@Autowired
-	private ProductRepository productRepository;
 
 	@Autowired
 	private BillingSubject billingSubject;
 	
-	@Autowired
-	private TableOrderRepository tableOrderRepository;
 
 	@Autowired
 	private TokenGeneratorSubject generatorToken;
@@ -53,6 +49,9 @@ public class TableOrderPlaceService implements OrderPlace {
 
 	@Autowired
 	private VendorMap vendorMap;
+	
+	@Autowired
+	private OfferFactory offerFactory;
 	
 	@Autowired
 	private Payment payment;
@@ -68,7 +67,7 @@ public class TableOrderPlaceService implements OrderPlace {
 		try {
 
 			TableOrder tableOrder = checkTableIsAvailable(orders);
-			System.err.println(tableOrder);
+
 			if (orders != null && tableOrder != null && tableOrder.getTableStatus().equals(TableStatus.AVAILABLE)) {
 				tableOrder.setTableStatus(TableStatus.BOOKED);
 
@@ -106,6 +105,7 @@ public class TableOrderPlaceService implements OrderPlace {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Order failed. Please try again.");
 		}
 
@@ -131,6 +131,15 @@ public class TableOrderPlaceService implements OrderPlace {
 		List<OrderDetails> orderDetails = new ArrayList<>();
 		orders.getOrderDetails().forEach(obj -> {
 			obj.setOrderId(saveOrder);
+			OrderDetails o = offerFactory.applyOffer(obj, saveOrder.getVendorId());
+			System.err.println(o);
+			
+			if(OfferType.BUY_X_GET_Y.equals(obj.getOfferType()) && o!=null) {
+				o.setOfferApplied(true);
+				o.setOrderId(saveOrder);
+				orderDetails.add(o);
+			}
+			
 			orderDetails.add(obj);
 		});
 
@@ -168,7 +177,6 @@ public class TableOrderPlaceService implements OrderPlace {
 
 	@Override
 	public void sendOrderNotificationVendorTable(TableOrder tableOrder) {
-		System.err.println("order place");
 		messagingTemplate.convertAndSend("/queue/" + tableOrder.getVendorId() + "/tables", tableOrder);
 		System.err.println("placed");
 
@@ -183,11 +191,21 @@ public class TableOrderPlaceService implements OrderPlace {
 				List<OrderDetails> orderDetails = new ArrayList<>();
 				orders.getOrderDetails().forEach(obj -> {
 					obj.setOrderId(saveOrder);
+					
+					OrderDetails o = offerFactory.applyOffer(obj, saveOrder.getVendorId());
+					System.err.println(o);
+					
+					if(OfferType.BUY_X_GET_Y.equals(obj.getOfferType()) && o!=null) {
+						o.setOfferApplied(true);
+						o.setOrderId(saveOrder);
+						orderDetails.add(o);
+					}
+					
 					orderDetails.add(obj);
 				});
-
+					
 				List<OrderDetails> ord = orderDetailsRepository.saveAll(orderDetails);
-
+				
 				if (ord != null && !ord.isEmpty()) {
 					sendOrderNotificationVendor(saveOrder);
 					return ResponseType.ResponseGenerator(RequestStatus.success, "Item Added");
@@ -199,6 +217,7 @@ public class TableOrderPlaceService implements OrderPlace {
 				return ResponseType.ResponseGenerator(RequestStatus.failure, "Item Not Added");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Item Not Added");
 		}
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.QrApplication.Dtos.BillingDtos;
 
 import com.QrApplication.Entity.Orders;
+import com.QrApplication.Enum.OfferType;
 import com.QrApplication.Interface.BillingSubject;
 import com.QrApplication.Repository.VenderRepository;
 
@@ -15,7 +16,6 @@ public class OrderBillingService implements BillingSubject {
 	@Autowired
 	private VenderRepository vendorRepository;
 
-	
 
 	@Override
 	public BillingDtos billGenerator(Orders orders) {
@@ -25,10 +25,18 @@ public class OrderBillingService implements BillingSubject {
 	    final double[] totalAmount = {0.0}; // Use an array to hold totalAmount
 
 	    this.vendorRepository.findById(orders.getVendorId()).ifPresent(vendor -> {
-
+	    	
 	        // Step 1: Calculate total amount of all items
 	        orders.getOrderDetails().forEach(item -> {
-	            double tmp = item.getAmount() * item.getQuntity();
+	        	double tmp = 0;
+	        	if (item != null && OfferType.BOGO.equals(item.getOfferType())) {
+	        	    tmp = item.getAmount() * item.getQuntity() / 2;
+	        	} else if (item != null && OfferType.FLAT_DISCOUNT.equals(item.getOfferType())) {
+	        	    tmp = item.getAmount() * item.getQuntity();
+	        	}else {
+	        		tmp = item.getAmount() * item.getQuntity();
+	        	}
+	            
 	            totalAmount[0] += tmp;
 	            System.err.println("Total amount of items: " + totalAmount[0]);
 	        });

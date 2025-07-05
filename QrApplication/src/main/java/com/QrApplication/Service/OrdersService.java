@@ -1,6 +1,7 @@
 package com.QrApplication.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -50,19 +51,35 @@ public class OrdersService {
 	}
 
 	public ResponseType getOngoinOrder(UUID id) {
+		
+		try {
+			
+			if (!id.equals(null)) {
 
-		if (!id.equals(null)) {
+//				Date date = new Date();
+				List<Orders> res = this.orderRepository.getOngoinOrder(id);
+				
+				List<Orders> newList = new ArrayList<>();
+				for(Orders orders : res) {
+					BillingDtos billingDtos = this.billingSubject.billGenerator(orders);
+					orders.setBillingDtos(billingDtos);
+					newList.add(orders);
+				}
 
-//			Date date = new Date();
-			List<Orders> res = this.orderRepository.getOngoinOrder(id);
-
-			if (!res.isEmpty()) {
-				return ResponseType.ResponseGenerator(RequestStatus.success, res);
-			} else {
-				return ResponseType.ResponseGenerator(RequestStatus.success, "No Conformed Order Are there");
+				if (!res.isEmpty()) {
+					return ResponseType.ResponseGenerator(RequestStatus.success, newList);
+				} else {
+					return ResponseType.ResponseGenerator(RequestStatus.success, "No Conformed Order Are there");
+				}
 			}
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+			return ResponseType.ResponseGenerator(RequestStatus.failure,e.getMessage());
 		}
-		return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+
 	}
 
 	public ResponseType getOrderByDateRange(List<Date> date, UUID venderId) {
@@ -194,5 +211,42 @@ public class OrdersService {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching customerInsides by vedeorId");
 		}
 	}
+	
+	public ResponseType revenueByFoodCategory(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.revenueByFoodCategory(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching revenueByFoodCategory by vedeorId");
+		}
+	}
+	
+	public ResponseType orderStatictics(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.orderStatictics(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching orderStatictics by vedeorId");
+		}
+	}
+	
+	public ResponseType getLowestSellingItems(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.getLowestSellingItems(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching getLowestSellingItems by vedeorId");
+		}
+	}
+	
+	public ResponseType getTopSellingItems(UUID vid) {
+		try {
+			List<Object[]> obj = this.orderRepository.getTopSellingItems(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching getTopSellingItems by vedeorId");
+		}
+	}
+
 
 }

@@ -55,12 +55,12 @@ public class Vendor {
 //	@JsonIgnore
 //	private Set<Users> users = new HashSet<>();
 	
-	@OneToMany(mappedBy = "productId", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "productId", fetch = FetchType.LAZY)
 //	@JsonManagedReference(value = "product-vendor")
 	private Set<Product> product = new HashSet<>();
 	
 	
-	@OneToMany(mappedBy = "vendor", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
 //	@JsonManagedReference(value = "vendor-address")
 	private  Set<Address> address= new HashSet<>();
 	

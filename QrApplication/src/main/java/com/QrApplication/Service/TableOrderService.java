@@ -16,6 +16,7 @@ import com.QrApplication.Entity.PaymentDetail;
 import com.QrApplication.Entity.TableOrder;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.RequestStatus;
+import com.QrApplication.Enum.TableStatus;
 import com.QrApplication.Interface.BillingSubject;
 import com.QrApplication.Repository.OrderRepository;
 import com.QrApplication.Repository.PaymentDetailRepos;
@@ -58,7 +59,8 @@ public class TableOrderService {
 	public ResponseType getTableByVendorId(UUID vendorId) {
 		
 		if(vendorId!=null) {
-			List<TableOrder> t = this.tableOrderRepository.findByVendorId(vendorId);
+			List<TableOrder> t = this.tableOrderRepository.findByVendorIdAndTableStatusNot(vendorId , TableStatus.REMOVE);
+//			List<TableOrder> t = this.tableOrderRepository.findByVendorId(vendorId);
 			if(t!=null) {
 				return ResponseType.ResponseGenerator(RequestStatus.success, t);
 			}

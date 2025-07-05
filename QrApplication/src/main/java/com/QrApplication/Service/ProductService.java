@@ -1,15 +1,18 @@
 package com.QrApplication.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.ProductDto;
 import com.QrApplication.Entity.Product;
 import com.QrApplication.Entity.Vendor;
 import com.QrApplication.Enum.RequestStatus;
+import com.QrApplication.Mapper.ProductMapper;
 import com.QrApplication.Repository.OrderRepository;
 import com.QrApplication.Repository.ProductRepository;
 
@@ -21,6 +24,9 @@ public class ProductService {
 
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private ProductMapper productMapper;
 
 	@Autowired
 	private ImageStoreInDirectory imageStoreInDirectory;
@@ -56,15 +62,15 @@ public class ProductService {
 
 			List<Product> res = this.productRepository.findByVendor(vendor);
 			res.forEach(item -> {
-				if (!item.getImage().equals(null)) {
+				if (item.getImage()!=null) {
 					String resImage = this.imageStoreInDirectory.getProductImage(item.getItemName());
 					item.setImage(resImage);
 				}
-
 			});
 
 			return ResponseType.ResponseGenerator(RequestStatus.success, res);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Request getError");
 		}
 
@@ -82,51 +88,23 @@ public class ProductService {
 		
 	}
 
-	public ResponseType addProduct(Product product) {
-
-		
-		
-		if (product.getProductId() != null) {
-			Product alreadyExist = this.productRepository.findById(product.getProductId()).get();
-			alreadyExist.setAmount(product.getAmount());
-			alreadyExist.setDescription(product.getDescription());
-			alreadyExist.setGram(product.getGram());
-
-			alreadyExist.setItemName(product.getItemName());
-			alreadyExist.setJain(product.getJain());
-			alreadyExist.setQuantity(product.getQuantity());
-			alreadyExist.setStatus(product.getStatus());
-			alreadyExist.setVegNonVeg(product.getVegNonVeg());
-
-			if (product != null && product.getImage()!=null && product.getImage().startsWith("data:image/")) {
-				imageStoreInDirectory.saveProductImage(product);
-				alreadyExist.setImage(product.getItemName());
-			}
-			
-			Product tmp = this.productRepository.save(alreadyExist);
-			if (tmp != null)
-				return ResponseType.ResponseGenerator(RequestStatus.success, "Product added successfully");
-			return ResponseType.ResponseGenerator(RequestStatus.failure, "Failed to add product. Please try again!");
-
-		}
-
-	
-		if (product != null && product.getAmount() != null && product.getVendor() != null
-				&& product.getProductId() == null) {
-
-			if (product.getImage() != null && product.getImage().startsWith("data:image/")) {
-				imageStoreInDirectory.saveProductImage(product);
-				product.setImage(product.getItemName());
-			}
-			
-			Product tmp = this.productRepository.save(product);
-			if (tmp != null)
-				return ResponseType.ResponseGenerator(RequestStatus.success, "Product added successfully");
-			return ResponseType.ResponseGenerator(RequestStatus.failure, "Failed to add product. Please try again!");
-		}else {
-			return ResponseType.ResponseGenerator(RequestStatus.failure, "Request Invalid");
-		}
-		
+	public ResponseType addProduct(ProductDto productDto) {
+						
+		    if (productDto != null && productDto.getProductId() != null) {
+		        Optional<Product> optionalProduct = productRepository.findById(productDto.getProductId());
+		        if(optionalProduct.isPresent()) {
+		        	  Product existingProduct = optionalProduct.get();
+		        	  productMapper.updateProductFromDto(productDto, existingProduct);
+		        	  return editProduct(existingProduct);
+		        }else {
+		        	return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+		        }
+		        
+		    }else {
+	        	  Product p = productMapper.toEntity(productDto);
+	        	  System.err.println(p.getOffer());
+	        	  return saveProduct(p);
+	        } 	
 	}
 
 	public ResponseType deleteProductByid(UUID id, UUID vender) {
@@ -135,6 +113,30 @@ public class ProductService {
 			return ResponseType.ResponseGenerator(RequestStatus.success, "Product successfully deleted");
 		}else {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Product deletion failed. The product with ID");
+		}
+	}
+	
+	public ResponseType saveProduct(Product product) {
+		try {
+		 imageStoreInDirectory.saveProductImage(product);
+		 product.setImage(product.getItemName());
+		 productRepository.save(product);
+			return ResponseType.ResponseGenerator(RequestStatus.success, "Product added successfully");
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Get Error While save Product");
+		}
+	}
+	
+	public ResponseType editProduct(Product product) {
+		try {
+			if (product.getImage() != null && product.getImage().startsWith("data:image/")) {
+				imageStoreInDirectory.saveProductImage(product);
+				product.setImage(product.getItemName());
+			}
+			 productRepository.save(product);
+			return ResponseType.ResponseGenerator(RequestStatus.success, "Product edit successfully");
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Get Error While edit Product");
 		}
 	}
 

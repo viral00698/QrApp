@@ -3,7 +3,9 @@ package com.QrApplication.Entity;
 import java.util.UUID;
 
 import com.QrApplication.Enum.FoodCategory;
+import com.QrApplication.Enum.OfferType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,17 +19,21 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OrderDetails {
-
+	
+	
+	public OrderDetails() {
+	    this.offerApplied = false;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID orderDetailsId;
@@ -54,6 +60,14 @@ public class OrderDetails {
 	@JoinColumn(name = "orderId")
 	@JsonBackReference
 	private Orders orderId;
+	
+	private UUID offerId;
+	
+	@Enumerated(EnumType.STRING)
+	private OfferType offerType;
+	
+	@Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+	private Boolean offerApplied;
 
 	@Override
 	public String toString() {
