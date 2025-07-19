@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,13 @@ import com.QrApplication.AuthRepository.RolesRepository;
 import com.QrApplication.AuthRepository.UserRepos;
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.AuthSecret.UsersBhehavior;
+import com.QrApplication.Entity.Employee;
 import com.QrApplication.Entity.Roles;
 import com.QrApplication.Entity.Users;
+import com.QrApplication.Entity.Vendor;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Enum.UserType;
+import com.QrApplication.Repository.EmployeeRepos;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -34,6 +38,9 @@ public class CreateUserService implements UsersBhehavior {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private EmployeeRepos employeeRepos;
 
 	public ResponseType createUser(UsersDto usersDto) {
 
@@ -51,6 +58,23 @@ public class CreateUserService implements UsersBhehavior {
 				users.setPassword(pwd);
 				users.setCreateDate(new Date());
 				users.setName(usersDto.getName());
+				
+				
+				if(usersDto.getVid()!=null) {
+					Vendor vendor = new Vendor();
+					vendor.setVendorId(UUID.fromString(usersDto.getVid()));
+					users.setVendorDetails(vendor);
+				}
+				
+				if(!usersDto.getUid().equals("NULL")) {
+					Employee employee = employeeRepos.findById(UUID.fromString(usersDto.getUid())).get();
+					if(employee!=null) {
+						users.setEmployee(employee);
+					}
+					
+				}
+				
+			
 				this.userRepos.save(users);
 
 				List<Users> u = this.userRepos.findByEmail(usersDto.getEmail());
@@ -110,6 +134,25 @@ public class CreateUserService implements UsersBhehavior {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	@Override
+	public ResponseType forgetPassword(UsersDto usersDto) {
+		
+		if(usersDto==null || usersDto.getEmail() == null || usersDto.getPassword() == null) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Request invalid");
+		}
+		
+	    Users users = userRepos.findByEmail(usersDto.getEmail()).get(0);
+	    if (users != null) {
+	        String pwd = passwordEncoder.encode(usersDto.getPassword());
+	        users.setPassword(pwd);
+	        userRepos.save(users);
+	        return ResponseType.ResponseGenerator(RequestStatus.success, "Password changed successfully");
+	    }
+
+	    return ResponseType.ResponseGenerator(RequestStatus.failure, "User not found");
+	    
 	}
 	
 }

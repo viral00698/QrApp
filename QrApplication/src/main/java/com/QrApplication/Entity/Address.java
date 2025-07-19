@@ -38,4 +38,8 @@ public class Address {
 //	@JsonBackReference(value = "user-vender")
 	private Vendor vendor;
 	
+	@ManyToOne
+	@JoinColumn(name = "empId")
+	private Employee employee;
+	
 }

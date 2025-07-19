@@ -10,6 +10,8 @@ public class UsersDto {
 	private String email;
 	private String password;
 	private String name;
+	private String vid;
+	private String uid;
 	private List<UserType> role;
 	
 }

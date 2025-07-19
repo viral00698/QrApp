@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
@@ -45,10 +46,20 @@ public class Vendor {
 	private String photo;
 	private Boolean status;
 	private Date createAt;
+	private String mobileNo;
 	
 	private String upa;
+	
 	private String rk;
 	private String sk;
+	
+	private String aadharNo;
+	private String aadharDoc;
+	
+	private String panNo;
+	private String panDoc;
+	private String fssiDoc;
+	private String gstDoc;
 	
 //	@OneToMany(mappedBy = "vendorDetails", fetch = FetchType.EAGER)
 //	@JsonManagedReference(value = "vendor-user")
@@ -63,6 +74,10 @@ public class Vendor {
 	@OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
 //	@JsonManagedReference(value = "vendor-address")
 	private  Set<Address> address= new HashSet<>();
+	
+	@JsonIgnoreProperties
+	@OneToMany(mappedBy = "vendor", fetch = FetchType.LAZY)
+    private Set<Employee> employees = new HashSet<>();
 	
 	
 	public Vendor(UUID id , String storeName) {

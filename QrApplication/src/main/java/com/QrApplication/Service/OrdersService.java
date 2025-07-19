@@ -2,10 +2,14 @@ package com.QrApplication.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +17,19 @@ import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.BillingDtos;
+import com.QrApplication.Dtos.OrderHistoryDto;
 import com.QrApplication.Dtos.StatisticsDto;
+import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Entity.Orders;
+import com.QrApplication.Entity.Product;
+import com.QrApplication.Entity.Vendor;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Interface.BillingSubject;
 import com.QrApplication.Repository.OrderDetailsRepository;
 import com.QrApplication.Repository.OrderRepository;
+import com.QrApplication.Repository.ProductRepository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Service
 public class OrdersService {
@@ -32,6 +42,9 @@ public class OrdersService {
 	
 	@Autowired
 	private OrderDetailsRepository orderDetailsRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
 
 	public ResponseType getWaitForAproveOrders(OrderStatus orderStatus, String vedeorId) {
 		try {
@@ -142,7 +155,20 @@ public class OrdersService {
 
 		try {
 			List<Orders> res = this.orderRepository.findByVendorId(UUID.fromString(vedeorId));
-			return ResponseType.ResponseGenerator(RequestStatus.success, res);
+			
+			List<Product> product = productRepository.getProduct(UUID.fromString(vedeorId));
+			
+			Map<UUID, String> map = new HashMap<>();
+		
+			for(Product p : product) {
+				map.put(p.getProductId(), p.getItemName());
+			}
+			
+			OrderHistoryDto orderHistoryDto = new OrderHistoryDto();
+			orderHistoryDto.setOrders(res);
+			orderHistoryDto.setProduct(map);
+			
+			return ResponseType.ResponseGenerator(RequestStatus.success, orderHistoryDto);
 		} catch (Exception e) {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Request Getting Error");
 		}
