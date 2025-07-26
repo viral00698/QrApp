@@ -139,19 +139,27 @@ public class CreateUserService implements UsersBhehavior {
 	@Override
 	public ResponseType forgetPassword(UsersDto usersDto) {
 		
-		if(usersDto==null || usersDto.getEmail() == null || usersDto.getPassword() == null) {
-			return ResponseType.ResponseGenerator(RequestStatus.failure, "Request invalid");
+		try {
+			if(usersDto==null || usersDto.getEmail() == null || usersDto.getPassword() == null) {
+				return ResponseType.ResponseGenerator(RequestStatus.failure, "Request invalid");
+			}
+			
+		    Users users = userRepos.findByEmail(usersDto.getEmail()).get(0);
+		    if (users != null) {
+		        String pwd = passwordEncoder.encode(usersDto.getPassword());
+		        users.setPassword(pwd);
+		        userRepos.save(users);
+		        return ResponseType.ResponseGenerator(RequestStatus.success, "Password changed successfully");
+		    }
+		    return ResponseType.ResponseGenerator(RequestStatus.failure, "User not found");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			  return ResponseType.ResponseGenerator(RequestStatus.failure, "getting error from server side");
 		}
 		
-	    Users users = userRepos.findByEmail(usersDto.getEmail()).get(0);
-	    if (users != null) {
-	        String pwd = passwordEncoder.encode(usersDto.getPassword());
-	        users.setPassword(pwd);
-	        userRepos.save(users);
-	        return ResponseType.ResponseGenerator(RequestStatus.success, "Password changed successfully");
-	    }
-
-	    return ResponseType.ResponseGenerator(RequestStatus.failure, "User not found");
+	
+	  
 	    
 	}
 	
