@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,18 +107,29 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 			""", nativeQuery = true)
 	List<Object[]> orderStatictics(@Param("vid") UUID vid);
 
+	
+	
+//	SELECT
+//    od.item_name,
+//    SUM(od.quntity) AS total_quantity,
+//    SUM(od.amount * od.quntity) AS total_revenue
+//FROM order_details od
+//JOIN orders o ON od.order_id = o.order_id
+//WHERE o.vendor_id = :vid
+//  AND o.order_at >= CURRENT_DATE - INTERVAL '35 days'
+//GROUP BY od.item_name
+//ORDER BY total_quantity DESC
+//LIMIT 13
+	
 	@Query(value = """
-		    SELECT
-		        od.item_name,
-		        SUM(od.quntity) AS total_quantity,
-		        SUM(od.amount * od.quntity) AS total_revenue
-		    FROM order_details od
-		    JOIN orders o ON od.order_id = o.order_id
-		    WHERE o.vendor_id = :vid
-		      AND o.order_at >= CURRENT_DATE - INTERVAL '35 days'
-		    GROUP BY od.item_name
-		    ORDER BY total_quantity DESC
-		    LIMIT 13
+		 SELECT
+        od.item_name,
+        o.order_at,
+        od.quntity,
+        od.amount
+    FROM order_details od
+    JOIN orders o ON od.order_id = o.order_id
+    WHERE o.vendor_id = :vid
 		""", nativeQuery = true)	List<Object[]> getTopSellingItems(@Param("vid") UUID vid);
 
 	@Query(value = """
@@ -134,5 +146,10 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 		    LIMIT 13
 		""", nativeQuery = true)
 	List<Object[]> getLowestSellingItems(@Param("vid") UUID vid);
+
+	
+	
+	@Query(value = "SELECT new Orders(orderAt,totelAmount,payment_mode) FROM Orders WHERE vendorId = :vid AND totelAmount > 0")
+	List<Orders> getPaymentMethodUsed(@Param("vid") UUID vid);
 
 }

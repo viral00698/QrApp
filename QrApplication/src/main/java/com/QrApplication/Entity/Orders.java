@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.QrApplication.Dtos.BillingDtos;
 import com.QrApplication.Enum.AppType;
 import com.QrApplication.Enum.OrderStatus;
+import com.QrApplication.Enum.OrderType;
 import com.QrApplication.Enum.PaymentMode;
 import com.QrApplication.Enum.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -89,6 +90,8 @@ public class Orders {
 	@Enumerated(EnumType.STRING)
 	private AppType appType;
 	
+	private OrderType orderType;
+	
 	@Column(nullable = false)
 	private String restroName;
 	
@@ -133,7 +136,12 @@ public class Orders {
 				+ restaurantsCharge + ", orderStatus=" + orderStatus + ", tableOrder=" + tableOrder + "]";
 	}
 	
+	public Orders(Date orderAt , Double totelAmount , PaymentMode paymentMode) {
+		this.orderAt = orderAt;
+		this.totelAmount = totelAmount;
+		this.payment_mode = paymentMode;
+	}
 	
-	
+
 	
 }

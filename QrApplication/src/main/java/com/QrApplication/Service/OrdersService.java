@@ -274,5 +274,16 @@ public class OrdersService {
 		}
 	}
 
+	public ResponseType getPaymentMethodUsed(UUID vid) {
+		
+		try {
+			List<Orders> obj = this.orderRepository.getPaymentMethodUsed(vid);
+			return ResponseType.ResponseGenerator(RequestStatus.success, obj);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching getPaymentMethodUsed by vedeorId");
+		}
+	}
+
 
 }
