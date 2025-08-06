@@ -11,6 +11,7 @@ import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.OfferDto;
 import com.QrApplication.Entity.Offer;
 import com.QrApplication.Enum.RequestStatus;
+import com.QrApplication.Mapper.OfferMapper;
 import com.QrApplication.Repository.OfferRepository;
 
 @Service
@@ -18,6 +19,8 @@ public class OfferService {
 	
 	@Autowired
 	private OfferRepository offerRepository;
+	
+	private OfferMapper offerMapper;
 
 	public ResponseType createOffer(Offer offer) {
 		
@@ -75,6 +78,24 @@ public class OfferService {
 		}
 		 return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Requset");
 	}
+
+	public ResponseType updateExpieryDate(OfferDto offerDto) {
+	    try {
+	        int res = offerRepository.updateExpieryDate(
+	            offerDto.getExpireDate(),
+	            offerDto.getMessage(),
+	            offerDto.getOfferId()
+	        );
+
+	        if (res > 0) {
+	            return ResponseType.ResponseGenerator(RequestStatus.success, "Offer expiry date updated successfully.");
+	        }
+	    } catch (Exception e) {
+	        return ResponseType.ResponseGenerator(RequestStatus.failure, "Error while updating offer expiry date.");
+	    }
+	    return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid request or offer not found.");
+	}
+
 
 
 }

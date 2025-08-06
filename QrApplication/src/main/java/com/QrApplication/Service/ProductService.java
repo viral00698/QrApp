@@ -133,8 +133,8 @@ public class ProductService {
 		try {
 			imageStoreInDirectory.saveProductImage(product);
 			product.setImage(product.getItemName());
-			productRepository.save(product);
-			return ResponseType.ResponseGenerator(RequestStatus.success, "Product added successfully");
+			Product p = productRepository.save(product);
+			return ResponseType.ResponseGenerator(RequestStatus.success, "Product added successfully" , p);
 		} catch (Exception e) {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Get Error While save Product");
 		}
@@ -146,8 +146,8 @@ public class ProductService {
 				imageStoreInDirectory.saveProductImage(product);
 				product.setImage(product.getItemName());
 			}
-			productRepository.save(product);
-			return ResponseType.ResponseGenerator(RequestStatus.success, "Product edit successfully");
+			Product p = productRepository.save(product);
+			return ResponseType.ResponseGenerator(RequestStatus.success, "Product edit successfully" , p);
 		} catch (Exception e) {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Get Error While edit Product");
 		}

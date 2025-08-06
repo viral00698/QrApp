@@ -32,8 +32,8 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 
 	List<Orders> findByCustomerUUID(UUID customerId);
 
-//	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = CONFIRMED OR o.orderStatus=PREPARING OR o.orderStatus=ONGOING) AND FUNCTION('DATE', o.orderAt) =:date AND vendorId = :id")
-	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = 'CONFIRMED' OR o.orderStatus = 'PREPARING' OR o.orderStatus = 'ONGOING') AND o.vendorId = :id")
+//	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = CONFIRMED OR o.orderStatus=PREPARING OR o.orderStatus=ONGOING) AND FUNCTION('DATE', o.orderAt) =:date AND vendorId = :id ")
+	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = 'CONFIRMED' OR o.orderStatus = 'PREPARING' OR o.orderStatus = 'ONGOING') AND o.vendorId = :id ORDER BY o.orderAt ASC")
 	List<Orders> getOngoinOrder(@Param("id") UUID id);
 
 	@Query("SELECT COUNT(o.orderId) AS totalOrderCount, " + "SUM(o.totelAmount) AS totalRevenue, "

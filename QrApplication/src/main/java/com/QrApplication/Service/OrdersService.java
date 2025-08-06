@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.BillingDtos;
+import com.QrApplication.Dtos.OrderDetailsDto;
 import com.QrApplication.Dtos.OrderHistoryDto;
 import com.QrApplication.Dtos.StatisticsDto;
 import com.QrApplication.Entity.OrderDetails;
@@ -284,6 +285,27 @@ public class OrdersService {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Geeting error while fatching getPaymentMethodUsed by vedeorId");
 		}
 	}
+
+	public ResponseType updateItemStatus(OrderDetailsDto orderDetailsDto) {
+	
+	    try {
+	        int updatedCount = orderDetailsRepository.updateItemStatus(
+	            orderDetailsDto.getOrderDetailsId(), 
+	            orderDetailsDto.getIsDelivered()
+	        );
+
+	        if (updatedCount > 0) {
+	        	Boolean res = orderDetailsDto.getIsDelivered();
+	            return ResponseType.ResponseGenerator(RequestStatus.success, "Item delivery status updated successfully." , res);
+	        } else {
+	            return ResponseType.ResponseGenerator(RequestStatus.failure, "No item found to update.");
+	        }
+
+	    } catch (Exception e) {
+	        return ResponseType.ResponseGenerator(RequestStatus.failure, "Error occurred while updating item status: " + e.getMessage());
+	    }
+	}
+
 
 
 }

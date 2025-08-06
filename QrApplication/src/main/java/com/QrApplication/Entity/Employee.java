@@ -23,10 +23,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = "users")
 public class Employee {
 
 	@Id
@@ -61,6 +64,9 @@ public class Employee {
 	
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
+	
+	@Transient
+	private Address addre;
 
 	
 	@JsonIgnore
@@ -68,6 +74,7 @@ public class Employee {
     @JoinColumn(name = "vendor_id") // this creates a foreign key in the Employee table
     private Vendor vendor;
  
+	@JsonIgnore
 	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
 	private  Set<Address> address = new HashSet<>();
 	

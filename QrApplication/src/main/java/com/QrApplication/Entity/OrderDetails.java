@@ -68,6 +68,9 @@ public class OrderDetails {
 	
 	@Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
 	private Boolean offerApplied;
+	
+	@Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+	private Boolean isDelivered;
 
 	@Override
 	public String toString() {

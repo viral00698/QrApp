@@ -5,10 +5,14 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.OrderDetailsDto;
+import com.QrApplication.Entity.OrderDetails;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Service.OrdersService;
 
@@ -49,6 +53,11 @@ public class OrdersController {
 	@GetMapping("getLastTwoDayOrder/{vedeorId}")
 	ResponseType getLastTwoDayOrder(@PathVariable String vedeorId){
 		return this.ordersService.getLastTwoDayOrder(vedeorId);
+	}
+	
+	@PostMapping("updateItemStatus")
+	ResponseType updateItemStatus(@RequestBody OrderDetailsDto orderDetailsDto) {
+		return this.ordersService.updateItemStatus(orderDetailsDto);
 	}
  
 	

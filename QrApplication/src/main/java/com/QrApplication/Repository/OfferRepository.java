@@ -35,4 +35,10 @@ public interface OfferRepository extends JpaRepository<Offer, UUID>{
 	int setOfferStatus(@Param("isActive") Boolean isActive, @Param("vendorId") UUID vendorId , @Param("offerId") UUID offerId);
 
 
+	@Transactional
+	@Modifying
+	@Query("UPDATE Offer o SET o.expireDate = :expireDate ,  o.message = :message  WHERE o.offerId = :offerId")
+	int updateExpieryDate(@Param("expireDate") long expireDate, @Param("message") String message, @Param("offerId") UUID offerId);
+
+
 }

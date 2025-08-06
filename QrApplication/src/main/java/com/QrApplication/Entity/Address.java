@@ -3,6 +3,7 @@ package com.QrApplication.Entity;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Entity;
@@ -28,16 +29,19 @@ public class Address {
 	private String villageStreet;
 	private String pincode;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "id")
 //	@JsonBackReference
 	private Users users;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "vendorId")
 //	@JsonBackReference(value = "user-vender")
 	private Vendor vendor;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "empId")
 	private Employee employee;
