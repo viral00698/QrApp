@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
@@ -28,7 +29,6 @@ public class TableOrderService {
 	@Autowired
 	private TableOrderRepository tableOrderRepository;
 	
-	 
 	@Autowired
 	private OrderRepository orderRepository;
 	
@@ -43,6 +43,12 @@ public class TableOrderService {
 	
 	@Autowired
 	private CreatePaymentOrder createPaymentOrder;
+	
+	@Autowired
+	private CurrentOrderStatus currentOrderStatus;
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
 	
 	public ResponseType addTable(TableOrder tableOrder) {
 		
@@ -120,26 +126,34 @@ public class TableOrderService {
 //			paymentDetail.setOrderId(reqOrder.getOrderId().toString());
 //			savePaymentDetail(paymentDetail);
 			
-			this.orderRepository.save(orders);
-			
-			
-			if(genrateInvoiceDto.getOrder().getTableOrder()==null)
+			Orders o =  this.orderRepository.save(orders);
+			currentOrderStatus.updateOrderStatus(orders);
+						
+			if(orders.getTableOrder() !=null && orders.getTableOrder().getTableId() !=null) {
+				ResponseType r = updateTableStatus(orders.getTableOrder());
+			}else {
 				return ResponseType.ResponseGenerator(RequestStatus.failure, "Table Object is null");
+			}
 			
-			updateTableStatus(genrateInvoiceDto.getOrder().getTableOrder());
 			
-			
+				
 			this.invoicePdfService.print(genrateInvoiceDto);
 //			RazorpayOrder obj =  createPaymentOrder.createOrder(orders); // razorpay order
 //			orderResponse.setRazorpayOrder(obj);
 //			orderResponse.setOrders(orders);
-			
-			return ResponseType.ResponseGenerator(RequestStatus.success, "table order close");
+			closeOrderNotificationVendorTable(orders);
+			return ResponseType.ResponseGenerator(RequestStatus.success, "table order close" , true);
 			
 		} catch (Exception e) {
 			System.err.println("Getting error while close order for table"+ e.getMessage());
-			return ResponseType.ResponseGenerator(RequestStatus.success , "Getting error while close order for table");
+			return ResponseType.ResponseGenerator(RequestStatus.success , "Getting error while close order for table", false);
 		}
+	}
+	
+	public void closeOrderNotificationVendorTable(Orders orders) {
+		messagingTemplate.convertAndSend("/queue/closeOrder" + orders.getVendorId() , orders);
+		System.err.println("placed");
+
 	}
 	
 	

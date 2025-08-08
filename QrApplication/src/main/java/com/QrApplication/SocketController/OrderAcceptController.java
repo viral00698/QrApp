@@ -24,8 +24,8 @@ public class OrderAcceptController {
 			System.err.println(orders);
 			System.err.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 			System.err.println(orders.getCustomerUUID());
-		this.simpMessagingTemplate.convertAndSend("/queue/"+ orders.getCustomerUUID() +"/messages" , orders);
-		this.currentOrderStatus.updateOrderStatus(orders.getOrderId(),orders.getOrderStatus());
+//		this.simpMessagingTemplate.convertAndSend("/queue/"+ orders.getCustomerUUID() +"/messages" , orders);
+		this.currentOrderStatus.updateOrderStatus(orders);
 	}
 
 }

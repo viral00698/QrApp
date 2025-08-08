@@ -1,15 +1,13 @@
 package com.QrApplication.Service;
 
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Entity.Orders;
-import com.QrApplication.Enum.OrderStatus;
+import com.QrApplication.Entity.TableOrder;
 import com.QrApplication.Interface.CurrentOrderSubject;
 import com.QrApplication.Repository.OrderRepository;
 
@@ -28,18 +26,24 @@ public class CurrentOrderStatus implements CurrentOrderSubject{
 	}
 	
 	@Override
-	public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
+	public void updateOrderStatus(Orders order) {
 
-		if((orderId != null || !orderId.toString().isEmpty()) && orderStatus != null){
-			if(orderRepository.existsByOrderId(orderId));{
+		if(order.getOrderId() != null && order.getOrderStatus() != null){
+			if(orderRepository.existsByOrderId(order.getOrderId()));{
 				Orders orders = new Orders();
-				orders.setOrderId(orderId);
-				orders.setOrderStatus(orderStatus);
+				orders.setOrderId(orders.getOrderId());
+				orders.setOrderStatus(orders.getOrderStatus());
 				try {
-				 int res = this.orderRepository.updateStatus(orderId , orderStatus);
+				 int res = this.orderRepository.updateStatus(order.getOrderId() , order.getOrderStatus());
 				 if(res > 0) {
+					 if(order.getCustomerMobileNo() != null) {
+						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getCustomerMobileNo() +"/messages", orders);
+					 }
+					 if(order.getVendorId()!= null) {
+						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getVendorId() +"/messages", orders);
+					 }
 					 
-					 simpMessagingTemplate.convertAndSend("/queue/a1e68d9a-4d59-4f25-a579-2bb23e928686/messages", orders);
+						
 				 }
 				}catch (Exception e) {
 					System.err.println(e.getMessage());
@@ -51,6 +55,15 @@ public class CurrentOrderStatus implements CurrentOrderSubject{
 			}
 		}
 		
+	}
+
+
+	@Override
+	public void updateTableStatus(TableOrder tableOrder) {
+
+		if(tableOrder.getTableId()!=null) {
+			 simpMessagingTemplate.convertAndSend("/queue/"+ tableOrder.getVendorId() +"/messages", tableOrder);
+		}
 	}
 
 }
