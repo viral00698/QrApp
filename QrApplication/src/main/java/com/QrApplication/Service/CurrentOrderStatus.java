@@ -36,11 +36,14 @@ public class CurrentOrderStatus implements CurrentOrderSubject{
 				try {
 				 int res = this.orderRepository.updateStatus(order.getOrderId() , order.getOrderStatus());
 				 if(res > 0) {
+					 Orders od = orderRepository.findById(order.getOrderId()).get();
+					 if(od == null)
+						 return;
 					 if(order.getCustomerMobileNo() != null) {
-						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getCustomerMobileNo() +"/messages", orders);
+						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getCustomerMobileNo() +"/messages", od);
 					 }
 					 if(order.getVendorId()!= null) {
-						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getVendorId() +"/messages", orders);
+						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getVendorId() +"/messages", od);
 					 }
 					 
 						
@@ -62,7 +65,7 @@ public class CurrentOrderStatus implements CurrentOrderSubject{
 	public void updateTableStatus(TableOrder tableOrder) {
 
 		if(tableOrder.getTableId()!=null) {
-			 simpMessagingTemplate.convertAndSend("/queue/"+ tableOrder.getVendorId() +"/messages", tableOrder);
+			 simpMessagingTemplate.convertAndSend("/queue/table"+ tableOrder.getVendorId() +"/messages", tableOrder);
 		}
 	}
 

@@ -130,6 +130,7 @@ public class TableOrderService {
 			currentOrderStatus.updateOrderStatus(orders);
 						
 			if(orders.getTableOrder() !=null && orders.getTableOrder().getTableId() !=null) {
+				orders.getTableOrder().setTableStatus(TableStatus.AVAILABLE);
 				ResponseType r = updateTableStatus(orders.getTableOrder());
 			}else {
 				return ResponseType.ResponseGenerator(RequestStatus.failure, "Table Object is null");
