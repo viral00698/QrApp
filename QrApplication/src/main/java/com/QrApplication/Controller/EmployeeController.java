@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.EmployeeDto;
+import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Service.EmployeeService;
 
 @RestController
@@ -38,6 +39,21 @@ public class EmployeeController {
 	
 	@GetMapping("getAddress/{empid}")
 	ResponseType getEmployeeAddress(@PathVariable String empid) {
-		return employeeService.getEmployeeAddress(UUID.fromString(empid));
+		try {
+			return employeeService.getEmployeeAddress(UUID.fromString(empid));
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Employee");
+		}
+		
+	}
+	
+	@GetMapping("getEmail/{vid}")
+	ResponseType getEmailByVid(@PathVariable String vid) {
+		try {
+			return employeeService.getEmailByVid(UUID.fromString(vid));
+		} catch (Exception e) {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid vendor");
+		}
+		
 	}
 }

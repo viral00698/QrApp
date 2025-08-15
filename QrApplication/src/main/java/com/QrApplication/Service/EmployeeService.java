@@ -1,6 +1,5 @@
 package com.QrApplication.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,10 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.QrApplication.AuthRepository.UserRepos;
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.EmailEmpIdDto;
 import com.QrApplication.Dtos.EmployeeDto;
 import com.QrApplication.Entity.Address;
 import com.QrApplication.Entity.Employee;
+import com.QrApplication.Entity.Users;
 import com.QrApplication.Entity.Vendor;
 import com.QrApplication.Enum.RequestStatus;
 import com.QrApplication.Implementation.DocumentUpload;
@@ -51,7 +53,12 @@ public class EmployeeService {
 
 	@Autowired
 	private DocumentUpload documentUpload;
-
+	
+	@Autowired
+	private UserRepos userRepos;
+	
+	
+	
 	public ResponseType createEmployee(EmployeeDto employeeDto) {
 
 		try {
@@ -234,6 +241,26 @@ public class EmployeeService {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "getting error while get  employee address");
 		}
 
+	}
+
+	public ResponseType getEmailByVid(UUID vid) {
+	    try {
+	        List<EmailEmpIdDto> u = userRepos.getEmailByVid(vid);
+	      
+	        HashMap<UUID, String> map = new HashMap<>();
+	        
+	        for (EmailEmpIdDto obj : u) {
+	            if (obj != null && obj.employeeId() != null) {
+	                map.put(obj.employeeId().getEmpId(), obj.email());
+	            }
+	        }
+	        
+	        return ResponseType.ResponseGenerator(RequestStatus.success , "Emails fetched successfully", map);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseType.ResponseGenerator(RequestStatus.failure , e.getMessage());
+	       
+	    }
 	}
 
 }

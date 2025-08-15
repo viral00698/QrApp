@@ -1,13 +1,18 @@
 package com.QrApplication.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.QrApplication.AuthRepository.UserRepos;
 import com.QrApplication.AuthSecret.ResponseType;
+import com.QrApplication.Dtos.EmailEmpIdDto;
+import com.QrApplication.Dtos.EmailVendorIdDto;
 import com.QrApplication.Dtos.VendorDto;
 import com.QrApplication.Entity.Address;
 import com.QrApplication.Entity.Vendor;
@@ -46,6 +51,9 @@ public class CreateVendorService {
 
 	@Autowired
 	private DocumentUpload documentUpload;
+	
+	@Autowired
+	private UserRepos userRepos;
 
 	public ResponseType createVendor(VendorDto vendorDto) {
 
@@ -106,6 +114,19 @@ public class CreateVendorService {
 			return ResponseType.ResponseGenerator(RequestStatus.failure,
 					"An error occurred while updating vendor status: " + e.getMessage());
 		}
+	}
+
+	public ResponseType getEmailbyMobile(String mobile , UUID vid) {
+		 
+		 try {
+			    EmailVendorIdDto u = userRepos.getEmailbyMobile(mobile , vid);
+		      
+		        return ResponseType.ResponseGenerator(RequestStatus.success , "Emails fetched successfully", u);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return ResponseType.ResponseGenerator(RequestStatus.failure , e.getMessage());
+		       
+		    }
 	}
 
 }
