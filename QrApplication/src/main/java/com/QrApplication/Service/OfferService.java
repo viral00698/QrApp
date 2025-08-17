@@ -41,7 +41,24 @@ public class OfferService {
 
 	public ResponseType activeOffer(Offer offer) {
 		
-		return null;
+	    try {
+	        if (offer == null) {
+	            return ResponseType.ResponseGenerator(RequestStatus.failure, "Vendor ID must not be null.");
+	        }
+
+	        long currentMillis = System.currentTimeMillis();
+	        List<Offer> res = offerRepository.findByVendorIdAndIsActiveTrueAndExpireDateGreaterThan(offer.getVendorId() , currentMillis);
+
+	        if (res.isEmpty()) {
+	            return ResponseType.ResponseGenerator(RequestStatus.success, "No active offers found.");
+	        }
+
+	        return ResponseType.ResponseGenerator(RequestStatus.success, res);
+
+	    } catch (Exception e) {
+	        e.printStackTrace(); // Optional: log to logger instead
+	        return ResponseType.ResponseGenerator(RequestStatus.failure, "Failed to fetch offers: " + e.getMessage());
+	    }
 	}
 	
 	public ResponseType getOfferByVendor(UUID vendorId) {
