@@ -29,6 +29,11 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 	@Transactional
 	@Query("UPDATE Orders o SET o.orderStatus=:orderStatus WHERE o.orderId =:orderId")
 	int updateStatus(@Param("orderId") UUID orderId, @Param("orderStatus") OrderStatus orderStatus);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE Orders o SET o.paymentStatus=:paymentStatus WHERE o.orderId =:orderId")
+	int updatePaymentStatus(@Param("orderId") UUID orderId, @Param("paymentStatus") PaymentStatus paymentStatus);
 
 	List<Orders> findByCustomerUUID(UUID customerId);
 

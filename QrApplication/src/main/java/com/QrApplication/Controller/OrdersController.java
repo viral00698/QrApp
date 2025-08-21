@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Dtos.OrderDetailsDto;
 import com.QrApplication.Entity.OrderDetails;
+import com.QrApplication.Entity.Orders;
 import com.QrApplication.Enum.OrderStatus;
 import com.QrApplication.Service.OrdersService;
 
@@ -58,6 +59,16 @@ public class OrdersController {
 	@PostMapping("updateItemStatus")
 	ResponseType updateItemStatus(@RequestBody OrderDetailsDto orderDetailsDto) {
 		return this.ordersService.updateItemStatus(orderDetailsDto);
+	}
+	
+	@PostMapping("qr_conform")
+	ResponseType QrOrderAcceptOrPaymentConform(@RequestBody Orders orders) {
+		return this.ordersService.QrOrderAcceptOrPaymentConform(orders);
+	}
+	
+	@PostMapping("qr_close_order")
+	ResponseType QrCloseOrder(@RequestBody Orders orders) {
+		return this.ordersService.QrCloseOrder(orders);
 	}
  
 	
