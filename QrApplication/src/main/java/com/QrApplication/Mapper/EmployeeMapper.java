@@ -37,6 +37,8 @@ public interface EmployeeMapper {
         @Mapping(target = "createAt", ignore = true),
 	    @Mapping(target = "users", ignore = true)
     })
+    
+    @Mapping(target = "addre", ignore = true)
     Employee toEntity(EmployeeDto dto);
 
     // Optional list mapping with null-safe config
@@ -51,5 +53,6 @@ public interface EmployeeMapper {
     	    @Mapping(target = "users", ignore = true)
     })
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "addre", ignore = true)
     void updateEmployeeFromDto(EmployeeDto dto, @MappingTarget Employee employee);
 }

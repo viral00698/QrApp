@@ -20,12 +20,14 @@ public interface VendorMapper {
 
 	    @Mapping(target = "product", ignore = true)
 	    @Mapping(target = "address", ignore = true)
+	    @Mapping(target = "employees", ignore = true)
 	    Vendor toEntity(VendorDto dto);
 
 	    // For partial update:
 	    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	    @Mapping(target = "product", ignore = true)
 	    @Mapping(target = "address", ignore = true)
+	    @Mapping(target = "employees", ignore = true)
 	    void updateVendorFromDto(VendorDto dto, @MappingTarget Vendor vendor);
 
 }
