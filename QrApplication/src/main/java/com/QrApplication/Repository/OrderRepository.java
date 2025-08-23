@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +29,16 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 	@Transactional
 	@Query("UPDATE Orders o SET o.orderStatus=:orderStatus WHERE o.orderId =:orderId")
 	int updateStatus(@Param("orderId") UUID orderId, @Param("orderStatus") OrderStatus orderStatus);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE Orders o SET o.paymentStatus=:paymentStatus WHERE o.orderId =:orderId")
+	int updatePaymentStatus(@Param("orderId") UUID orderId, @Param("paymentStatus") PaymentStatus paymentStatus);
 
 	List<Orders> findByCustomerUUID(UUID customerId);
 
-//	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = CONFIRMED OR o.orderStatus=PREPARING OR o.orderStatus=ONGOING) AND FUNCTION('DATE', o.orderAt) =:date AND vendorId = :id")
-	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = 'CONFIRMED' OR o.orderStatus = 'PREPARING' OR o.orderStatus = 'ONGOING') AND o.vendorId = :id")
+//	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = CONFIRMED OR o.orderStatus=PREPARING OR o.orderStatus=ONGOING) AND FUNCTION('DATE', o.orderAt) =:date AND vendorId = :id ")
+	@Query("SELECT o FROM Orders o WHERE (o.orderStatus = 'CONFIRMED' OR o.orderStatus = 'PREPARING' OR o.orderStatus = 'ONGOING') AND o.vendorId = :id ORDER BY o.orderAt ASC")
 	List<Orders> getOngoinOrder(@Param("id") UUID id);
 
 	@Query("SELECT COUNT(o.orderId) AS totalOrderCount, " + "SUM(o.totelAmount) AS totalRevenue, "
@@ -71,8 +77,8 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 	@Query(value = "SELECT order_status,   order_at AS order_datetime, COUNT(order_id) AS total_orders FROM public.orders WHERE vendor_id = :vid GROUP BY order_at , order_status ORDER BY order_datetime", nativeQuery = true)
 	List<Object[]> countOrdersGroupByDay(@Param("vid") UUID vid);
 
-	@Query(value = "SELECT customer_mobile_no, DATE(order_at) AS order_date, COUNT(*) AS order_count FROM public.orders GROUP BY customer_mobile_no, DATE(order_at) HAVING COUNT(*) > 0", nativeQuery = true)
-	List<Object[]> customerInsides(UUID vid);
+	@Query(value = "SELECT customer_mobile_no, DATE(order_at) AS order_date, COUNT(*) AS order_count FROM public.orders WHERE vendor_id = :vid  GROUP BY customer_mobile_no, DATE(order_at) HAVING COUNT(*) > 0", nativeQuery = true)
+	List<Object[]> customerInsides(@Param("vid") UUID vid);
 
 	@Query(value = """
 			SELECT
@@ -106,18 +112,29 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 			""", nativeQuery = true)
 	List<Object[]> orderStatictics(@Param("vid") UUID vid);
 
+	
+	
+//	SELECT
+//    od.item_name,
+//    SUM(od.quntity) AS total_quantity,
+//    SUM(od.amount * od.quntity) AS total_revenue
+//FROM order_details od
+//JOIN orders o ON od.order_id = o.order_id
+//WHERE o.vendor_id = :vid
+//  AND o.order_at >= CURRENT_DATE - INTERVAL '35 days'
+//GROUP BY od.item_name
+//ORDER BY total_quantity DESC
+//LIMIT 13
+	
 	@Query(value = """
-		    SELECT
-		        od.item_name,
-		        SUM(od.quntity) AS total_quantity,
-		        SUM(od.amount * od.quntity) AS total_revenue
-		    FROM order_details od
-		    JOIN orders o ON od.order_id = o.order_id
-		    WHERE o.vendor_id = :vid
-		      AND o.order_at >= CURRENT_DATE - INTERVAL '35 days'
-		    GROUP BY od.item_name
-		    ORDER BY total_quantity DESC
-		    LIMIT 13
+		 SELECT
+        od.item_name,
+        o.order_at,
+        od.quntity,
+        od.amount
+    FROM order_details od
+    JOIN orders o ON od.order_id = o.order_id
+    WHERE o.vendor_id = :vid
 		""", nativeQuery = true)	List<Object[]> getTopSellingItems(@Param("vid") UUID vid);
 
 	@Query(value = """
@@ -134,5 +151,10 @@ public interface OrderRepository extends JpaRepository<Orders, UUID> {
 		    LIMIT 13
 		""", nativeQuery = true)
 	List<Object[]> getLowestSellingItems(@Param("vid") UUID vid);
+
+	
+	
+	@Query(value = "SELECT new Orders(orderAt,totelAmount,payment_mode) FROM Orders WHERE vendorId = :vid AND totelAmount > 0")
+	List<Orders> getPaymentMethodUsed(@Param("vid") UUID vid);
 
 }

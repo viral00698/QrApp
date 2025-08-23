@@ -36,5 +36,10 @@ public class AuthController {
 		return ResponseType.ResponseGenerator(RequestStatus.success, "Logout successfully" ,HttpStatus.ACCEPTED);
 	}
 	
+	@PostMapping("forgotPassword")
+	public ResponseType login(@RequestBody  UsersDto usersDto) {
+		return usersBhehavior.forgetPassword(usersDto);
+	}
+	
 	
 }

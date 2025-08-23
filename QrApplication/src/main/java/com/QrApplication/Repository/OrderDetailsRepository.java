@@ -7,11 +7,15 @@ import java.util.UUID;
 import org.json.JSONObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 
 import com.QrApplication.Entity.OrderDetails;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface OrderDetailsRepository extends JpaRepository<OrderDetails, UUID>{
@@ -28,4 +32,12 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, UUID
 		    @Param("startDate") Date startDate,
 		    @Param("endDate") Date endDate,
 		    Pageable pageable);
+
+	@Query("SELECT od FROM OrderDetails od WHERE od.orderId.orderId = :oid")
+	List<OrderDetails> findByOrderId(@Param("oid") UUID oid);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE OrderDetails od SET od.isDelivered = :b WHERE od.orderDetailsId = :orderDetailsId")
+	int updateItemStatus(@Param("orderDetailsId") UUID orderDetailsId, @Param("b") boolean b);
 }

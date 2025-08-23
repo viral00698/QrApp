@@ -35,5 +35,8 @@ public interface ProductRepository extends JpaRepository<Product, UUID>{
 	 	@Transactional
 	 	@Query("DELETE FROM Product p WHERE p.productId = :id AND p.vendor.vendorId = :vender")
 		public int deleteProductByid(@Param("id") UUID id, @Param("vender") UUID vender);
+	 	
+	 	@Query("SELECT new Product(p.productId,p.itemName) FROM Product p WHERE p.vendor.vendorId =  :vendorId")
+		public List<Product> getProduct(@Param("vendorId") UUID vendorId);
 
 }

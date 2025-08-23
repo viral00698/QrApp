@@ -7,9 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface UsersBhehavior {
 	
-//	private String forgetPassword(UsersDto usersDto) {
-//		return null;
-//	}
+	public ResponseType forgetPassword(UsersDto usersDto);
 //	private Boolean idActive(String email) {
 //		return true;
 //	}

@@ -2,7 +2,9 @@ package com.QrApplication.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +96,7 @@ public class TableOrderPlaceService implements OrderPlace {
 							"Order is not Placed. Please try again.");
 				}
 
+				savedOrder.setTableOrder(tableOrder);
 				sendOrderNotificationVendor(savedOrder);
 				sendOrderNotificationVendorTable(tableOrder);
 
@@ -193,7 +196,6 @@ public class TableOrderPlaceService implements OrderPlace {
 					obj.setOrderId(saveOrder);
 					
 					OrderDetails o = offerFactory.applyOffer(obj, saveOrder.getVendorId());
-					System.err.println(o);
 					
 					if(OfferType.BUY_X_GET_Y.equals(obj.getOfferType()) && o!=null) {
 						o.setOfferApplied(true);
@@ -206,7 +208,14 @@ public class TableOrderPlaceService implements OrderPlace {
 					
 				List<OrderDetails> ord = orderDetailsRepository.saveAll(orderDetails);
 				
+				List<OrderDetails> odetails = orderDetailsRepository.findByOrderId(saveOrder.getOrderId());
+					System.err.println("Order length " + odetails.size());
 				if (ord != null && !ord.isEmpty()) {
+					
+					Set<OrderDetails> od = new HashSet<>();
+					od.addAll(odetails);
+					saveOrder.setOrderDetails(od);
+					
 					sendOrderNotificationVendor(saveOrder);
 					return ResponseType.ResponseGenerator(RequestStatus.success, "Item Added");
 				}else {

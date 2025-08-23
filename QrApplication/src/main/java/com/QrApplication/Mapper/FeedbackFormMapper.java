@@ -19,6 +19,7 @@ import com.QrApplication.Entity.Question;
 @Mapper(componentModel = "spring", uses = { FeedbackAnswerMapper.class })
 public interface FeedbackFormMapper {
 
+	@Mapping(target = "status", ignore=true)
 	@Mapping(source = "vendor.vendorId", target = "vendorId")
 	FeedbackFormDto toDto(FeedbackForm form);
 

@@ -1,17 +1,19 @@
 package com.QrApplication.Service;
 
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.QrApplication.AuthSecret.ResponseType;
 import com.QrApplication.Entity.Orders;
+import com.QrApplication.Entity.TableOrder;
 import com.QrApplication.Enum.OrderStatus;
+import com.QrApplication.Enum.PaymentMode;
+import com.QrApplication.Enum.PaymentStatus;
 import com.QrApplication.Interface.CurrentOrderSubject;
 import com.QrApplication.Repository.OrderRepository;
+import com.twilio.rest.media.v1.MediaProcessor.Order;
 
 @Service
 public class CurrentOrderStatus implements CurrentOrderSubject{
@@ -28,18 +30,35 @@ public class CurrentOrderStatus implements CurrentOrderSubject{
 	}
 	
 	@Override
-	public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
+	public void updateOrderStatus(Orders order) {
 
-		if((orderId != null || !orderId.toString().isEmpty()) && orderStatus != null){
-			if(orderRepository.existsByOrderId(orderId));{
+		if(order.getOrderId() != null && order.getOrderStatus() != null){
+			if(orderRepository.existsByOrderId(order.getOrderId()));{
 				Orders orders = new Orders();
-				orders.setOrderId(orderId);
-				orders.setOrderStatus(orderStatus);
+				orders.setOrderId(orders.getOrderId());
+				orders.setOrderStatus(orders.getOrderStatus());
+				orders.setPaymentStatus(order.getPaymentStatus());
 				try {
-				 int res = this.orderRepository.updateStatus(orderId , orderStatus);
+				 int res = this.orderRepository.updateStatus(order.getOrderId() , order.getOrderStatus());
+				 
+				 
+				 
+				 if(order.getPayment_mode() == PaymentMode.CASH) {
+					 int r = this.orderRepository.updatePaymentStatus(order.getOrderId(), order.getPaymentStatus());
+				 }
+				
 				 if(res > 0) {
+					 Orders od = orderRepository.findById(order.getOrderId()).get();
+					 if(od == null)
+						 return;
+					 if(order.getCustomerMobileNo() != null) {
+						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getCustomerMobileNo() +"/messages", od);
+					 }
+					 if(order.getVendorId()!= null) {
+						 simpMessagingTemplate.convertAndSend("/queue/"+ order.getVendorId() +"/messages", od);
+					 }
 					 
-					 simpMessagingTemplate.convertAndSend("/queue/a1e68d9a-4d59-4f25-a579-2bb23e928686/messages", orders);
+						
 				 }
 				}catch (Exception e) {
 					System.err.println(e.getMessage());
@@ -51,6 +70,15 @@ public class CurrentOrderStatus implements CurrentOrderSubject{
 			}
 		}
 		
+	}
+
+
+	@Override
+	public void updateTableStatus(TableOrder tableOrder) {
+
+		if(tableOrder.getTableId()!=null) {
+			 simpMessagingTemplate.convertAndSend("/queue/table"+ tableOrder.getVendorId() +"/messages", tableOrder);
+		}
 	}
 
 }

@@ -81,6 +81,11 @@ public class Product {
 	@JsonIgnore
 	private Vendor vendor;
 	
+	public Product(UUID productId , String itemName){
+		this.productId = productId;
+		this.itemName = itemName;
+	}
+	
 //	@ManyToOne
 //	@JoinColumn
 //	@JsonIgnore

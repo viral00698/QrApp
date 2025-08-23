@@ -110,6 +110,18 @@ public class OrderStatsticsController {
 			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
 		}
 	}
+	
+
+	@GetMapping("/getPaymentMethodUsed/{vid}")
+	public ResponseType getPaymentMethodUsed(@PathVariable("vid") String vid) {
+		
+		if(vid!=null) {
+			return this.ordersService.getPaymentMethodUsed(UUID.fromString(vid));
+		}
+		else {
+			return ResponseType.ResponseGenerator(RequestStatus.failure, "Invalid Request");
+		}
+	}
 
 
 }

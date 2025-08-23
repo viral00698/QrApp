@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -66,8 +67,14 @@ public class OrderDetails {
 	@Enumerated(EnumType.STRING)
 	private OfferType offerType;
 	
+	@Transient
+	private Boolean oflineOffer;
+	
 	@Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
 	private Boolean offerApplied;
+	
+	@Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+	private Boolean isDelivered;
 
 	@Override
 	public String toString() {

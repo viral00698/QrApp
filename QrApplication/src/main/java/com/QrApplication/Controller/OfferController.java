@@ -51,5 +51,10 @@ public class OfferController {
 	ResponseType setOfferStatus(@RequestBody OfferDto offerDto) {
 		return offerService.setOfferStatus(offerDto);
 	}
+	
+	@PostMapping("updateExpieryDate")
+	ResponseType updateExpieryDate(@RequestBody OfferDto offerDto) {
+		return offerService.updateExpieryDate(offerDto);
+	}
 
 }
