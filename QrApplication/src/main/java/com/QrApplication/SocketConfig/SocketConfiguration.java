@@ -35,12 +35,13 @@ public class SocketConfiguration implements WebSocketMessageBrokerConfigurer{
         		"https://table.vitts.in",
         		"https://back.vitts.in",
         		"https://dash.vitts.in",
-        		
+        		"http://10.105.240.204:4202",
         		"https://qr.vitts.in",
         		"https://table.vitts.in",
         		"https://back.vitts.in",
         		"https://dash.vitts.in",
-        		
+        		"https://accept.vitts.in",
+        		"https://back.vitts.in/app",
         		"http://"+SecurityConstent.IP_ADDRESS +":4202",
         		"http://"+SecurityConstent.IP_ADDRESS +":4202",
         		"http://vitts.in",
@@ -48,6 +49,7 @@ public class SocketConfiguration implements WebSocketMessageBrokerConfigurer{
         		"http://localhost:80",
         		"http://127.0.0.1:80",
         		"http://localhost:4201",
+        		"http://127.0.0.1:4202",
         		"http://"+SecurityConstent.IP_ADDRESS+":4201" )
         .withSockJS();
 //        ArrayList<String> urls = new ArrayList<>();

@@ -101,17 +101,17 @@ public class SecurityConfig{
 		coreConfig.setExposedHeaders(Arrays.asList("Authorization" , "x-xsrf-token"));
 		
 		List<String> urls = new ArrayList<>();
-		urls.add("http://172.29.186.204");
-		urls.add("http://192.168.156.204:ws");
-		urls.add("http://192.168.1.2:4201");
+		urls.add("http://192.168.1.5");
+		urls.add("http://192.168.1.18:ws");
+		urls.add("http://10.159.140.204:4201");
 		urls.add("http://13.232.231.237");
 		urls.add("http://13.232.231.237:80");
 		urls.add("http://13.232.231.237:8080");
 		urls.add("http://192.168.53.204:ws");
 		urls.add("http://65.0.124.230:ws");
-		urls.add("http://192.168.1.21:4202");
-		urls.add("http://172.29.186.204	:4201");
-		urls.add("http://0.0.0.0");
+		urls.add("http://10.159.140.204:4202");
+		urls.add("http://192.168.1.5:4201");
+		urls.add("http://10.105.240.204:4201");
 		urls.add("http://127.0.0.1:80");
 		urls.add("http://qr.vitts.in");
 		urls.add("http://table.vitts.in");
@@ -123,12 +123,14 @@ public class SecurityConfig{
 		urls.add("https://table.vitts.in");
 		urls.add("https://dash.vitts.in");
 		urls.add("https://back.vitts.in");
-		
+		urls.add("https://back.vitts.in/app/ws");
+		urls.add("https://back.vitts.in/app/");
+		urls.add("https://back.vitts.in/app");
 		urls.add("http://qr.vitts.in/");
 //		urls.add("http://192.168.1.10:*");
-		urls.add("http://192.168.16.204:*");
-		urls.add("http://172.29.186.204:4202");
-		urls.add("http://localhost");	
+		urls.add("http://10.105.240.204:4201");
+		urls.add("http://192.168.1.5:4202");
+		urls.add("http://localhost:4201");	
 		urls.add("http://vitts.in");	
 		urls.add("https://vitts.in");	
 		urls.add("https://table.vitts.in");
@@ -136,6 +138,7 @@ public class SecurityConfig{
 		urls.add("http://qr.vitts.in/ws");
 		urls.add("https://qr.vitts.in/ws");
 		urls.add("http://table.vitts.in/ws");
+		urls.add("http://127.0.0.1:4202");
 		urls.add("https://table.vitts.in/ws");
 		urls.add("https://accept.vitts.in");
 		urls.add("https://accept.vitts.in/ws");
